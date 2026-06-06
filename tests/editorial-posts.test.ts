@@ -152,13 +152,23 @@ describe("editorial post package", () => {
   });
 
   it("keeps immediate internal blog links published", () => {
-    const immediateSlugs = new Set(
-      getPublishedEditorialPosts(new Date("2026-06-05T15:00:00.000Z")).map(
-        (post) => post.slug,
-      ),
+    const immediatePosts = getPublishedEditorialPosts(
+      new Date("2026-06-05T15:00:00.000Z"),
     );
+    const immediateSlugs = new Set(immediatePosts.map((post) => post.slug));
+    const allSlugs = new Set(editorialPosts.map((post) => post.slug));
 
     expect(immediateSlugs.has("soup-vegetable-cost")).toBe(true);
     expect(immediateSlugs.has("stir-fry-vegetable-choice")).toBe(true);
+
+    for (const post of immediatePosts) {
+      for (const link of post.internalLinks) {
+        const blogSlug = link.href.match(/^\/blog\/(.+)$/)?.[1];
+
+        if (blogSlug && allSlugs.has(blogSlug)) {
+          expect(immediateSlugs.has(blogSlug)).toBe(true);
+        }
+      }
+    }
   });
 });

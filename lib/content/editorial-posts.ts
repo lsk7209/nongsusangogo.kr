@@ -191,7 +191,7 @@ const drafts: PostDraft[] = [
     ],
     internalLinks: [
       { href: "/guide/normal-price", label: "평년가격과 현재가 비교" },
-      { href: "/blog/weekly-market-note", label: "농산물 가격 기록법" },
+      { href: "/blog/salad-greens-price-map", label: "과채류와 샐러드 채소 비교" },
     ],
     externalSource: {
       ...sources.kamis,
@@ -239,8 +239,8 @@ const drafts: PostDraft[] = [
       },
     ],
     internalLinks: [
-      { href: "/blog/substitute-food-map", label: "식재료 대체재 지도" },
-      { href: "/blog/freezer-vegetable-strategy", label: "냉동 보관 채소 구분법" },
+      { href: "/blog/soup-vegetable-cost", label: "국거리 채소 비용 조절" },
+      { href: "/blog/stir-fry-vegetable-choice", label: "볶음 채소 선택 기준" },
     ],
     externalSource: {
       ...sources.kamis,
@@ -288,8 +288,8 @@ const drafts: PostDraft[] = [
       },
     ],
     internalLinks: [
-      { href: "/blog/bulk-buying-failure", label: "대량 구매 실패 패턴" },
-      { href: "/blog/weekly-market-note", label: "주간 가격 기록법" },
+      { href: "/blog/garlic-bulk-buy-checklist", label: "마늘 대량 구매 체크" },
+      { href: "/blog/soup-vegetable-cost", label: "국거리 채소 비용 조절" },
     ],
     externalSource: {
       ...sources.foodsafety,
@@ -338,7 +338,7 @@ const drafts: PostDraft[] = [
     ],
     internalLinks: [
       { href: "/blog/green-onion-price-spike-response", label: "대파 가격 급등 대응" },
-      { href: "/blog/freezer-vegetable-strategy", label: "냉동 보관 채소 전략" },
+      { href: "/blog/onion-storage-loss-cost", label: "양파 보관 손실" },
     ],
     externalSource: {
       ...sources.foodsafety,
@@ -387,7 +387,7 @@ const drafts: PostDraft[] = [
     ],
     internalLinks: [
       { href: "/blog/salad-greens-price-map", label: "샐러드 채소 가격 조합" },
-      { href: "/blog/leafy-vegetable-risk", label: "잎채소 가격 변동 리스크" },
+      { href: "/blog/cucumber-summer-price-buying-window", label: "오이 여름 시세 판단" },
     ],
     externalSource: {
       ...sources.kosis,
@@ -485,7 +485,7 @@ const drafts: PostDraft[] = [
     ],
     internalLinks: [
       { href: "/blog/green-onion-price-spike-response", label: "대파 가격 급등 대응" },
-      { href: "/blog/radish-soup-seasonal-choice", label: "무 국거리 선택 기준" },
+      { href: "/blog/onion-storage-loss-cost", label: "양파 보관 손실" },
     ],
     externalSource: {
       ...sources.kamis,
