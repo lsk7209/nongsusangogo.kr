@@ -9,16 +9,16 @@ import { sitePages } from "@/lib/content/site-pages";
 const mojibakePattern = /�|怨|媛|濡|鍮|諛|寃|쇱|띿|쨌|鍮좊|異쒖|援ъ|듬\?|紐|臾|醫|湲|踰|占/;
 
 describe("editorial post package", () => {
-  it("contains 123 priority publish-ready Codex-only posts", () => {
-    expect(editorialPosts).toHaveLength(123);
+  it("contains 223 priority publish-ready Codex-only posts", () => {
+    expect(editorialPosts).toHaveLength(223);
     expect(editorialPosts.every((post) => post.codexOnly)).toBe(true);
   });
 
   it("keeps titles, slugs, and main keywords unique", () => {
-    expect(new Set(editorialPosts.map((post) => post.title)).size).toBe(123);
-    expect(new Set(editorialPosts.map((post) => post.slug)).size).toBe(123);
+    expect(new Set(editorialPosts.map((post) => post.title)).size).toBe(223);
+    expect(new Set(editorialPosts.map((post) => post.slug)).size).toBe(223);
     expect(new Set(editorialPosts.map((post) => post.mainKeyword)).size).toBe(
-      123,
+      223,
     );
   });
 
