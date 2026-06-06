@@ -251,6 +251,9 @@ export default function BlogPostPage({ params }: PageProps) {
         </p>
         <p>{post.externalSource.note}</p>
         <p>{post.cta}</p>
+        <a className="read-more-link" href="/blog">
+          장보기 인사이트 더 보기
+        </a>
       </section>
       <Disclosure />
     </main>

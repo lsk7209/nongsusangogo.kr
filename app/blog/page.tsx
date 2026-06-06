@@ -1,12 +1,18 @@
 import { getPublishedEditorialPosts } from "@/lib/content/editorial-posts";
+import { readEnv } from "@/lib/config/env";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "농산물 장보기 인사이트",
-  description:
-    "농수산고고의 농산물 시세, 장보기 보관, 대체재, SEO/AEO 콘텐츠 모음입니다.",
-};
+export function generateMetadata() {
+  return {
+    title: "농산물 시세와 장보기 인사이트",
+    description:
+      "농산물 시세, 장보기 보관, 대체재, 가격 읽기 기준을 정리한 농수산고고 SEO/AEO 콘텐츠 모음입니다.",
+    alternates: {
+      canonical: `${readEnv().SITE_URL}/blog`,
+    },
+  };
+}
 
 export default function BlogIndex() {
   const posts = getPublishedEditorialPosts();
