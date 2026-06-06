@@ -22,6 +22,7 @@ const envSchema = z.object({
   GSC_SERVICE_ACCOUNT_JSON: z.string().optional(),
   GSC_OAUTH_TOKEN_FILE: z.string().optional(),
   GSC_OAUTH_TOKEN_JSON: z.string().optional(),
+  GOOGLE_SITE_VERIFICATION: z.string().optional(),
   GA4_MEASUREMENT_ID: z.string().optional(),
   NEXT_PUBLIC_GA4_MEASUREMENT_ID: z.string().optional(),
   GOOGLE_ADSENSE_CLIENT_ID: z.string().optional(),

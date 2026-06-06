@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { AnalyticsScripts } from "@/components/analytics-scripts";
+import { readEnv } from "@/lib/config/env";
 import "./globals.css";
+
+const env = readEnv();
 
 export const metadata: Metadata = {
   title: {
@@ -9,7 +12,12 @@ export const metadata: Metadata = {
   },
   description:
     "농산물 시세, 장보기 타이밍, 보관 손실, 대체재 기준을 실생활 관점으로 정리하는 농수산고고입니다.",
-  metadataBase: new URL(process.env.SITE_URL ?? "https://nongsusangogo.kr"),
+  metadataBase: new URL(env.SITE_URL),
+  verification: env.GOOGLE_SITE_VERIFICATION
+    ? {
+        google: env.GOOGLE_SITE_VERIFICATION,
+      }
+    : undefined,
 };
 
 export default function RootLayout({
