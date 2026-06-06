@@ -27,14 +27,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      {env.NAVER_SITE_VERIFICATION ? (
-        <head>
+      <head>
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="농수산고고 RSS"
+          href={`${env.SITE_URL}/rss.xml`}
+        />
+        {env.NAVER_SITE_VERIFICATION ? (
           <meta
             name="naver-site-verification"
             content={env.NAVER_SITE_VERIFICATION}
           />
-        </head>
-      ) : null}
+        ) : null}
+      </head>
       <body>
         <AnalyticsScripts />
         <div className="shell">
