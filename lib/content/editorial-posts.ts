@@ -2743,8 +2743,8 @@ export const editorialPosts: EditorialPost[] = drafts.map((draft, index) => {
   const publishAt = addHours("2026-06-06T16:00:00+09:00", index * 5);
   const publishReadyDraft = {
     ...draft,
-    body: [...draft.body, buildPracticalClosing(draft, index)],
-    deepDives: buildDeepDives(draft, index),
+    body: [...draft.body, buildCleanPracticalClosing(draft, index)],
+    deepDives: buildCleanDeepDives(draft, index),
   };
 
   return {
@@ -2799,6 +2799,101 @@ function calculateQualityScore(post: PostDraft & Pick<EditorialPost, "deepDives"
   }
 
   return Math.min(98, 92 + Math.floor(textLength / 900));
+}
+
+function buildCleanPracticalClosing(post: PostDraft, index: number) {
+  const [firstKeyword, secondKeyword, thirdKeyword] = post.expandedKeywords;
+  const mainTopic = withJosa(post.mainKeyword, "은", "는");
+  const mainObject = withJosa(post.mainKeyword, "을", "를");
+  const firstSubject = withJosa(firstKeyword, "이", "가");
+  const secondSubject = withJosa(secondKeyword, "이", "가");
+  const secondObject = withJosa(secondKeyword, "을", "를");
+  const thirdObject = withJosa(thirdKeyword, "을", "를");
+  const firstWithAnd = withJosa(firstKeyword, "과", "와");
+  const closingStyles = [
+    `${mainObject} 제대로 활용하려면 가격표를 본 뒤 바로 구매하지 말고, 오늘 먹을 양과 남을 가능성을 먼저 나눠야 합니다. ${firstSubject} 좋아 보여도 ${secondKeyword} 계획이 없으면 절약 효과가 약해지고, ${thirdObject} 관리하지 못하면 버리는 양이 생깁니다. 다음 장보기에서는 구매 날짜, 포장 단위, 실제 소비량을 짧게 기록해 두세요. 이 기록이 쌓이면 같은 ${post.category} 품목을 볼 때도 감이 아니라 근거로 판단할 수 있습니다.`,
+    `이 글의 핵심은 ${mainObject} 한 가지 정답으로 보지 않는 것입니다. 집집마다 조리 빈도, 냉장고 공간, 선호 메뉴가 다르기 때문에 ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}의 우선순위도 달라집니다. 오늘은 소량 구매가 맞을 수 있고, 다음 주에는 대량 구매가 맞을 수 있습니다. 중요한 것은 가격 변동에 끌려가는 대신 우리 집 소비 속도에 맞춰 선택하는 것입니다.`,
+    `${mainObject} 검색한 뒤 실행할 일은 세 가지입니다. 첫째, 이번 주 실제 메뉴에 ${post.mainKeyword} 관련 품목이 몇 번 들어가는지 확인합니다. 둘째, ${firstWithAnd} ${secondKeyword} 중 어느 쪽이 더 큰 비용 변수인지 고릅니다. 셋째, ${thirdObject} 처리할 시간이 없으면 구매량을 줄입니다. 이 순서만 지켜도 충동구매와 보관 손실을 동시에 줄일 수 있습니다.`,
+    `좋은 장보기는 가장 싼 가격을 맞히는 일이 아니라 실패 확률을 낮추는 일입니다. ${post.mainKeyword}도 마찬가지입니다. ${firstSubject} 눈에 띄는 날에는 필요한 양만 사고, ${secondSubject} 부담되는 주간에는 대체 품목을 준비하고, ${thirdKeyword} 관리가 어려운 환경에서는 소포장이나 손질 제품을 고려하세요. 이렇게 조건을 나누면 글을 읽은 뒤 바로 행동으로 이어집니다.`,
+  ];
+
+  return closingStyles[index % closingStyles.length]!;
+}
+
+function buildCleanDeepDives(post: PostDraft, index: number) {
+  const [firstKeyword, secondKeyword, thirdKeyword] = post.expandedKeywords;
+  const itemLabel = post.mainKeyword.replace(/\s?(가격|예산|시세|구조|확인법|달력|목록|보관|선택).*$/, "");
+  const mainTopic = withJosa(post.mainKeyword, "은", "는");
+  const mainObject = withJosa(post.mainKeyword, "을", "를");
+  const firstSubject = withJosa(firstKeyword, "이", "가");
+  const secondObject = withJosa(secondKeyword, "을", "를");
+  const thirdObject = withJosa(thirdKeyword, "을", "를");
+  const variants = [
+    [
+      {
+        heading: "검색 의도에 맞는 빠른 결론",
+        body: `${mainObject} 찾는 독자는 긴 설명보다 지금 사도 되는지, 얼마나 사야 하는지, 무엇을 조심해야 하는지를 먼저 알고 싶어 합니다. 그래서 결론은 조건부로 제시하는 편이 좋습니다. 바로 쓸 메뉴가 있고 ${thirdObject} 관리할 수 있으면 구매해도 되지만, 조리 계획이 흐리다면 ${firstSubject} 좋아 보여도 소량 구매가 안전합니다. 이런 답변 구조는 사람에게도 읽기 쉽고 AEO 관점에서도 요약되기 쉽습니다.`,
+      },
+      {
+        heading: "가격보다 먼저 볼 생활 변수",
+        body: `${post.mainKeyword} 판단에서 가격은 출발점일 뿐입니다. 실제 결과는 가족 수, 보관 공간, 조리 시간, 남은 재료 처리 능력에 따라 달라집니다. ${secondObject} 낮추고 싶다면 먼저 냉장고 재고를 확인하고, 같은 역할을 하는 대체 품목을 하나 정해두세요. 그러면 가격이 예상보다 높아도 메뉴 전체를 포기하지 않고 비용을 조정할 수 있습니다.`,
+      },
+      {
+        heading: "다음 장보기로 이어지는 기록법",
+        body: `한 번의 구매 경험을 기록하면 다음 ${post.category} 장보기 품질이 올라갑니다. ${itemLabel || post.mainKeyword}을 언제 샀는지, 얼마나 남겼는지, 어떤 보관 방식이 맞았는지 적어두면 다음번 ${firstKeyword} 판단이 빨라집니다. 특히 ${thirdKeyword}에서 실패했다면 가격보다 처리 순서를 먼저 바꿔야 합니다. 이 기록은 블로그 글을 읽는 데서 끝나지 않고 실제 식비 절감으로 이어지는 가장 현실적인 장치입니다.`,
+      },
+    ],
+    [
+      {
+        heading: "구매해야 하는 경우와 기다릴 경우",
+        body: `${mainTopic} 무조건 싸질 때까지 기다리는 방식으로 접근하면 놓치는 것이 많습니다. 오늘 바로 조리할 메뉴가 있고 대체 품목이 마땅치 않다면 조금 높은 가격도 받아들일 수 있습니다. 반대로 일정이 불분명하거나 ${secondKeyword} 부담이 크다면 기다리거나 소포장으로 줄이는 편이 낫습니다. 핵심은 ${firstKeyword}만 보지 말고 사용 시점을 함께 보는 것입니다.`,
+      },
+      {
+        heading: "대체재를 고를 때의 기준",
+        body: `대체재는 맛이 완전히 같은 품목을 찾는 일이 아닙니다. ${post.mainKeyword} 관련 품목이 메뉴에서 맡는 역할을 먼저 나눠야 합니다. 포만감, 향, 식감, 단백질, 색감 중 무엇이 중요한지 정하면 ${secondKeyword}를 낮추면서도 만족도를 지킬 수 있습니다. 이 방식은 가격이 오른 주간에도 식단을 무리하게 바꾸지 않게 해줍니다.`,
+      },
+      {
+        heading: "신뢰도를 높이는 출처 활용",
+        body: `상위노출을 노리는 시세 글은 출처 없이 단정하면 신뢰를 잃습니다. 공식 가격 정보나 식품 안전 정보를 참고하되, 숫자를 그대로 옮기기보다 생활 판단으로 번역해야 합니다. ${thirdKeyword}처럼 집에서 바로 확인할 수 있는 기준을 함께 제시하면 독자는 글을 읽고 자신의 상황에 적용할 수 있습니다. 이것이 단순 키워드 반복보다 검색 품질에 더 중요합니다.`,
+      },
+    ],
+    [
+      {
+        heading: "가구 규모별로 달라지는 답",
+        body: `${mainTopic} 1인가구와 4인가족의 답이 같을 수 없습니다. 1인가구는 소포장과 보관 손실을 우선하고, 가족 단위는 반복 메뉴와 대량 구매 효율을 볼 수 있습니다. ${firstSubject} 같아도 소비 속도가 다르면 결과가 달라지므로, 글 안에서는 독자가 자기 규모에 맞춰 판단할 수 있게 조건을 분리해야 합니다.`,
+      },
+      {
+        heading: "보관 손실을 비용으로 계산하기",
+        body: `${thirdKeyword}는 부가 정보가 아니라 실제 비용입니다. 싸게 샀더라도 절반을 남기면 높은 가격에 필요한 만큼 산 것보다 손해일 수 있습니다. ${post.category} 품목은 신선도, 수분, 냄새, 산패, 해동 같은 변수가 있어 구매 직후 처리 방식이 중요합니다. 보관 가능 기간을 먼저 정하고 가격을 보는 순서가 더 안전합니다.`,
+      },
+      {
+        heading: "SEO 글에서 필요한 행동 유도",
+        body: `정보 글도 마지막에는 행동을 제안해야 합니다. ${post.mainKeyword}를 읽은 독자에게 관련 장보기 기준, 보관 글, 대체재 글로 이어지는 내부 링크를 제공하면 체류 흐름이 좋아집니다. 또한 ${secondKeyword}를 낮추는 체크리스트를 제시하면 독자는 페이지를 단순히 훑고 나가지 않고 실제 결정에 활용하게 됩니다.`,
+      },
+    ],
+  ];
+
+  return variants[index % variants.length]!.map((section, sectionIndex) => ({
+    ...section,
+    body: `${section.body} ${buildCleanEvidenceSentence(post, sectionIndex)}`,
+  }));
+}
+
+function buildCleanEvidenceSentence(post: PostDraft, sectionIndex: number) {
+  const [firstKeyword, secondKeyword, thirdKeyword] = post.expandedKeywords;
+  const firstSubject = withJosa(firstKeyword, "이", "가");
+  const secondObject = withJosa(secondKeyword, "을", "를");
+  const thirdSubject = withJosa(thirdKeyword, "은", "는");
+
+  if (sectionIndex === 0) {
+    return `실제로 적용할 때는 ${firstSubject} 일시적인 장점인지 반복되는 소비 패턴인지 구분해야 합니다. 같은 가격 정보라도 오늘 먹을 메뉴가 정해진 집과 아직 식단이 없는 집의 답은 다르므로, 글 안에서 이 차이를 분명히 보여주는 것이 중요합니다.`;
+  }
+
+  if (sectionIndex === 1) {
+    return `${secondObject} 줄이려면 구매처 비교만으로는 부족합니다. 포장 단위, 손질 시간, 냉장고 여유, 대체 품목까지 함께 검토해야 실제 장바구니 비용이 낮아지고 독자에게도 실행 가능한 조언이 됩니다.`;
+  }
+
+  return `${thirdSubject} 구매 후 만족도를 결정하는 마지막 기준입니다. 이 부분을 체크리스트와 내부 링크로 연결하면 독자가 다음 행동을 쉽게 선택할 수 있고, ${post.mainKeyword} 글의 전문성과 체류 가치도 함께 높아집니다.`;
 }
 
 function buildPracticalClosing(post: PostDraft, index: number) {
