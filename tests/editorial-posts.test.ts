@@ -125,8 +125,14 @@ describe("editorial post package", () => {
     }
   });
 
-  it("schedules posts every five hours", () => {
-    for (let index = 1; index < editorialPosts.length; index += 1) {
+  it("publishes ten posts immediately and schedules the rest every five hours", () => {
+    const immediatePublishAt = editorialPosts[0]!.publishAt;
+
+    for (let index = 0; index < 10; index += 1) {
+      expect(editorialPosts[index]!.publishAt).toBe(immediatePublishAt);
+    }
+
+    for (let index = 11; index < editorialPosts.length; index += 1) {
       const previous = new Date(editorialPosts[index - 1]!.publishAt).getTime();
       const current = new Date(editorialPosts[index]!.publishAt).getTime();
       expect(current - previous).toBe(5 * 60 * 60 * 1000);
@@ -134,10 +140,25 @@ describe("editorial post package", () => {
   });
 
   it("only exposes posts after their scheduled time", () => {
-    const beforeFirst = new Date("2026-06-06T06:59:00.000Z");
-    const firstSlot = new Date("2026-06-06T07:00:00.000Z");
+    const beforeImmediate = new Date("2026-06-05T14:59:00.000Z");
+    const immediateSlot = new Date("2026-06-05T15:00:00.000Z");
+    const beforeNextSlot = new Date("2026-06-06T18:59:00.000Z");
+    const nextSlot = new Date("2026-06-06T19:00:00.000Z");
 
-    expect(getPublishedEditorialPosts(beforeFirst)).toHaveLength(0);
-    expect(getPublishedEditorialPosts(firstSlot)).toHaveLength(1);
+    expect(getPublishedEditorialPosts(beforeImmediate)).toHaveLength(0);
+    expect(getPublishedEditorialPosts(immediateSlot)).toHaveLength(10);
+    expect(getPublishedEditorialPosts(beforeNextSlot)).toHaveLength(10);
+    expect(getPublishedEditorialPosts(nextSlot)).toHaveLength(11);
+  });
+
+  it("keeps immediate internal blog links published", () => {
+    const immediateSlugs = new Set(
+      getPublishedEditorialPosts(new Date("2026-06-05T15:00:00.000Z")).map(
+        (post) => post.slug,
+      ),
+    );
+
+    expect(immediateSlugs.has("soup-vegetable-cost")).toBe(true);
+    expect(immediateSlugs.has("stir-fry-vegetable-choice")).toBe(true);
   });
 });

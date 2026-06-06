@@ -35,20 +35,32 @@ describe("phase 4 site and seo", () => {
       "https://example.com",
       undefined,
       undefined,
-      new Date("2026-06-06T06:59:00.000Z"),
+      new Date("2026-06-05T14:59:00.000Z"),
     );
-    const afterFirst = buildSitemapEntries(
+    const afterImmediate = buildSitemapEntries(
       "https://example.com",
       undefined,
       undefined,
-      new Date("2026-06-06T07:00:00.000Z"),
+      new Date("2026-06-05T15:00:00.000Z"),
+    );
+    const beforeNext = buildSitemapEntries(
+      "https://example.com",
+      undefined,
+      undefined,
+      new Date("2026-06-06T18:59:00.000Z"),
     );
 
     expect(beforeFirst.map((entry) => entry.url)).not.toContain(
       "https://example.com/blog/cucumber-summer-price-buying-window",
     );
-    expect(afterFirst.map((entry) => entry.url)).toContain(
+    expect(afterImmediate.map((entry) => entry.url)).toContain(
       "https://example.com/blog/cucumber-summer-price-buying-window",
+    );
+    expect(afterImmediate.map((entry) => entry.url)).toContain(
+      "https://example.com/blog/stir-fry-vegetable-choice",
+    );
+    expect(beforeNext.map((entry) => entry.url)).not.toContain(
+      "https://example.com/blog/radish-soup-seasonal-choice",
     );
   });
 });

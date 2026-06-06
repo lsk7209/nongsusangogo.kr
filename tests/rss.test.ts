@@ -24,8 +24,14 @@ describe("rss feed", () => {
     expect(xml).toContain(
       "https://nongsusangogo.kr/blog/cucumber-summer-price-buying-window",
     );
-    expect(xml).not.toContain(
+    expect(xml).toContain(
       "https://nongsusangogo.kr/blog/tomato-retail-wholesale-gap",
+    );
+    expect(xml).toContain(
+      "https://nongsusangogo.kr/blog/stir-fry-vegetable-choice",
+    );
+    expect(xml).not.toContain(
+      "https://nongsusangogo.kr/blog/radish-soup-seasonal-choice",
     );
   });
 
@@ -59,7 +65,7 @@ describe("rss feed", () => {
   });
 
   it("keeps future scheduled posts out of RSS", () => {
-    const beforeFirst = new Date("2026-06-06T06:59:00.000Z");
+    const beforeFirst = new Date("2026-06-05T14:59:00.000Z");
     const xml = buildRssFeed({
       siteUrl: "https://nongsusangogo.kr",
       posts: getPublishedEditorialPosts(beforeFirst),

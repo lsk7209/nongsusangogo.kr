@@ -2554,9 +2554,15 @@ function buildBulkDrafts(): PostDraft[] {
       expandedKeywords: [...seed.expandedKeywords],
       category: seed.category,
       intent: seed.intent,
-      excerpt: `${seed.mainKeyword}는 단순히 오늘 가격이 싼지 비싼지로 끝나는 문제가 아닙니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 함께 보면 ${seed.angle}에 맞는 구매량과 보관 방식을 더 정확히 정할 수 있습니다.`,
-      quickAnswer: `${seed.mainKeyword}를 판단할 때는 ${firstKeyword}만 보지 말고 ${secondKeyword}와 ${thirdKeyword}까지 함께 확인해야 합니다. ${seed.item}은 가격표보다 실제로 먹는 양, 보관 중 손실, 대체 가능한 메뉴가 결과를 크게 바꾸므로 필요한 기간과 조리 계획을 먼저 정하는 편이 안전합니다.`,
-      body: buildBulkBody(seed, index, profile.focus),
+      excerpt: cleanGeneratedKoreanText(
+        `${seed.mainKeyword}는 단순히 오늘 가격이 싼지 비싼지로 끝나는 문제가 아닙니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 함께 보면 ${seed.angle}에 맞는 구매량과 보관 방식을 더 정확히 정할 수 있습니다.`,
+      ),
+      quickAnswer: cleanGeneratedKoreanText(
+        `${seed.mainKeyword}를 판단할 때는 ${firstKeyword}만 보지 말고 ${secondKeyword}와 ${thirdKeyword}까지 함께 확인해야 합니다. ${seed.item}은 가격표보다 실제로 먹는 양, 보관 중 손실, 대체 가능한 메뉴가 결과를 크게 바꾸므로 필요한 기간과 조리 계획을 먼저 정하는 편이 안전합니다.`,
+      ),
+      body: buildBulkBody(seed, index, profile.focus).map(
+        cleanGeneratedKoreanText,
+      ),
       checklist: [
         `${seed.item}을 실제로 먹을 날짜와 인원을 먼저 적기`,
         `${firstKeyword} 기준으로 필요한 양과 남을 가능성 나누기`,
@@ -2584,7 +2590,9 @@ function buildBulkDrafts(): PostDraft[] {
         label: sources[seed.source].label,
         note: `${seed.category} 가격과 식품 정보를 확인할 때 참고할 수 있는 공식 출처입니다.`,
       },
-      cta: `${seed.mainKeyword}를 확인했다면 오늘 장바구니에 넣을 ${seed.item} 양을 한 번 줄여 적고, ${firstKeyword}와 ${thirdKeyword} 기준으로 다음 장보기 메모를 남겨두세요.`,
+      cta: cleanGeneratedKoreanText(
+        `${seed.mainKeyword}를 확인했다면 오늘 장바구니에 넣을 ${seed.item} 양을 한 번 줄여 적고, ${firstKeyword}와 ${thirdKeyword} 기준으로 다음 장보기 메모를 남겨두세요.`,
+      ),
       contentElements: [...profile.elements],
       accentColors: seed.accentColors,
     };
@@ -2737,10 +2745,28 @@ function withJosa(text: string, withFinal: string, withoutFinal: string) {
   return `${text}${(code - 0xac00) % 28 === 0 ? withoutFinal : withFinal}`;
 }
 
+function cleanGeneratedKoreanText(text: string) {
+  return text
+    .replaceAll("보관법를", "보관법을")
+    .replaceAll("보관를", "보관을")
+    .replaceAll("후숙를", "후숙을")
+    .replaceAll("구성을", "구성을")
+    .replaceAll("밥값와", "밥값과")
+    .replaceAll("비용를", "비용을")
+    .replaceAll("소비용를", "소비용을")
+    .replaceAll("플레인를", "플레인을")
+    .replaceAll("루틴와", "루틴과")
+    .replaceAll("손실가", "손실이")
+    .replaceAll("가격가", "가격이")
+    .replaceAll("정보가가", "정보가")
+    .replaceAll("예산가", "예산이")
+    .replaceAll("구조는도", "구조도");
+}
+
 drafts.push(...buildBulkDrafts());
 
 export const editorialPosts: EditorialPost[] = drafts.map((draft, index) => {
-  const publishAt = addHours("2026-06-06T16:00:00+09:00", index * 5);
+  const publishAt = getEditorialPublishAt(index);
   const publishReadyDraft = {
     ...draft,
     body: [...draft.body, buildCleanPracticalClosing(draft, index)],
@@ -2759,6 +2785,14 @@ export const editorialPosts: EditorialPost[] = drafts.map((draft, index) => {
     codexOnly: true,
   };
 });
+
+function getEditorialPublishAt(index: number) {
+  if (index < 10) {
+    return new Date("2026-06-06T00:00:00+09:00").toISOString();
+  }
+
+  return addHours("2026-06-07T04:00:00+09:00", (index - 10) * 5);
+}
 
 export function getPublishedEditorialPosts(now = new Date()) {
   return editorialPosts.filter((post) => new Date(post.publishAt) <= now);
