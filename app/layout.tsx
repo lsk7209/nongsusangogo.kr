@@ -27,6 +27,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+      {env.NAVER_SITE_VERIFICATION ? (
+        <head>
+          <meta
+            name="naver-site-verification"
+            content={env.NAVER_SITE_VERIFICATION}
+          />
+        </head>
+      ) : null}
       <body>
         <AnalyticsScripts />
         <div className="shell">
