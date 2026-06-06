@@ -47,6 +47,26 @@ type ServiceAccount = {
   token_uri?: string;
 };
 
+type OAuthToken = {
+  token?: string;
+  access_token?: string;
+  refresh_token?: string;
+  token_uri?: string;
+  client_id?: string;
+  client_secret?: string;
+  expiry?: string;
+};
+
+type GscAuthConfig =
+  | {
+      type: "oauth";
+      token: OAuthToken;
+    }
+  | {
+      type: "service-account";
+      serviceAccount: ServiceAccount;
+    };
+
 type SiteEntry = {
   siteUrl: string;
   permissionLevel?: string;
@@ -55,7 +75,7 @@ type SiteEntry = {
 type GscRuntimeConfig = {
   siteUrl: string;
   sitemapUrl: string;
-  serviceAccount: ServiceAccount;
+  auth: GscAuthConfig;
   preferredPropertyUrl?: string;
 };
 
@@ -64,9 +84,7 @@ export async function submitAndVerifySitemap(
 ): Promise<GscSubmissionResult> {
   const config = await readGscRuntimeConfig(source);
   const preflight = await runSitemapPreflight(config.siteUrl, config.sitemapUrl);
-  const accessToken = await createServiceAccountAccessToken(
-    config.serviceAccount,
-  );
+  const accessToken = await createGscAccessToken(config.auth);
   const propertyUrl = await resolvePropertyUrl(
     accessToken,
     config.siteUrl,
@@ -96,9 +114,7 @@ export async function getSubmittedSitemapStatus(
 ): Promise<GscSubmissionResult> {
   const config = await readGscRuntimeConfig(source);
   const preflight = await runSitemapPreflight(config.siteUrl, config.sitemapUrl);
-  const accessToken = await createServiceAccountAccessToken(
-    config.serviceAccount,
-  );
+  const accessToken = await createGscAccessToken(config.auth);
   const propertyUrl = await resolvePropertyUrl(
     accessToken,
     config.siteUrl,
@@ -129,14 +145,49 @@ async function readGscRuntimeConfig(
     "GSC_SITE_URL or SITE_URL",
   );
   const sitemapUrl = source.GSC_SITEMAP_URL ?? `${siteUrl}sitemap.xml`;
-  const serviceAccount = await readServiceAccount(source);
+  const auth = await readGscAuthConfig(source);
 
   return {
     siteUrl,
     sitemapUrl,
-    serviceAccount,
+    auth,
     preferredPropertyUrl: source.GSC_PROPERTY_URL,
   };
+}
+
+async function readGscAuthConfig(source: EnvSource): Promise<GscAuthConfig> {
+  const oauthToken = await readOAuthToken(source);
+
+  if (oauthToken) {
+    return {
+      type: "oauth",
+      token: oauthToken,
+    };
+  }
+
+  return {
+    type: "service-account",
+    serviceAccount: await readServiceAccount(source),
+  };
+}
+
+async function readOAuthToken(source: EnvSource): Promise<OAuthToken | null> {
+  const rawJson = source.GSC_OAUTH_TOKEN_JSON;
+  const filePath = source.GSC_OAUTH_TOKEN_FILE ?? "D:\\env\\gsc_token.json";
+
+  if (rawJson) {
+    return JSON.parse(rawJson) as OAuthToken;
+  }
+
+  try {
+    return JSON.parse(await readFile(filePath, "utf8")) as OAuthToken;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return null;
+    }
+
+    throw error;
+  }
 }
 
 async function readServiceAccount(source: EnvSource): Promise<ServiceAccount> {
@@ -287,6 +338,57 @@ async function createServiceAccountAccessToken(account: ServiceAccount) {
   if (!response.ok || !json.access_token) {
     throw new Error(
       `GSC token request failed: ${json.error ?? response.statusText}`,
+    );
+  }
+
+  return json.access_token;
+}
+
+async function createGscAccessToken(auth: GscAuthConfig) {
+  if (auth.type === "service-account") {
+    return createServiceAccountAccessToken(auth.serviceAccount);
+  }
+
+  return createOAuthAccessToken(auth.token);
+}
+
+async function createOAuthAccessToken(token: OAuthToken) {
+  const existingToken = token.token ?? token.access_token;
+  const expiry = token.expiry ? Date.parse(token.expiry) : 0;
+
+  if (existingToken && expiry > Date.now() + 60_000) {
+    return existingToken;
+  }
+
+  if (!token.refresh_token || !token.client_id || !token.client_secret) {
+    if (existingToken) {
+      return existingToken;
+    }
+
+    throw new Error(
+      "GSC OAuth token must include access token or refresh_token/client credentials.",
+    );
+  }
+
+  const body = new URLSearchParams({
+    client_id: token.client_id,
+    client_secret: token.client_secret,
+    refresh_token: token.refresh_token,
+    grant_type: "refresh_token",
+  });
+  const response = await fetch(token.token_uri ?? tokenAudience, {
+    method: "POST",
+    headers: { "content-type": "application/x-www-form-urlencoded" },
+    body,
+  });
+  const json = (await response.json()) as {
+    access_token?: string;
+    error?: string;
+  };
+
+  if (!response.ok || !json.access_token) {
+    throw new Error(
+      `GSC OAuth token refresh failed: ${json.error ?? response.statusText}`,
     );
   }
 
