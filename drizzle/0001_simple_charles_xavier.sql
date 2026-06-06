@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `collect_checkpoints_unique_scope` ON `collect_checkpoints` (`source_code`,`scope_key`);

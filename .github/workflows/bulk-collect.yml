@@ -1,0 +1,24 @@
+name: bulk-collect
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run batch:collect
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          KAMIS_BASE_URL: ${{ secrets.KAMIS_BASE_URL }}
+          KAMIS_CERT_ID: ${{ secrets.KAMIS_CERT_ID }}
+          KAMIS_CERT_KEY: ${{ secrets.KAMIS_CERT_KEY }}
