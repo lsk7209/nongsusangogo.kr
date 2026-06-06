@@ -2597,29 +2597,144 @@ function buildBulkBody(
   profileFocus: string,
 ) {
   const [firstKeyword, secondKeyword, thirdKeyword] = seed.expandedKeywords;
-  const scenario = [
-    "바로 조리할 식재료",
-    "며칠 나누어 먹을 상비 재료",
-    "선물이나 행사에 쓰는 품목",
-    "아이 식단이나 도시락에 반복되는 재료",
-    "날씨와 제철 영향을 크게 받는 품목",
-  ][index % 5]!;
-  const decisionWord = [
-    "구매량",
-    "구매 시점",
-    "보관 방식",
-    "대체 메뉴",
-    "손질 순서",
-    "예산 한도",
-  ][index % 6]!;
+  const itemSubject = withJosa(seed.item, "은", "는");
+  const itemObject = withJosa(seed.item, "을", "를");
+  const mainTopic = withJosa(seed.mainKeyword, "은", "는");
+  const mainObject = withJosa(seed.mainKeyword, "을", "를");
+  const thirdSubject = withJosa(thirdKeyword, "이", "가");
+  const firstSubject = withJosa(firstKeyword, "이", "가");
+  const categoryTopic = withJosa(seed.category, "은", "는");
+  const pattern = index % 10;
 
-  return [
-    `${seed.mainKeyword}를 검색하는 사람은 대개 가격표 하나보다 오늘 어떤 행동을 해야 하는지 알고 싶어 합니다. ${seed.item}은 ${seed.angle}에 따라 같은 가격도 다르게 느껴집니다. 그래서 이 글은 ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 따로 외우는 방식이 아니라 장바구니 안에서 어떤 순서로 판단해야 하는지에 초점을 둡니다. ${profileFocus}`,
-    `${scenario}로 쓸 때는 ${decisionWord}이 먼저입니다. 예를 들어 ${seed.item}을 당일 소비한다면 조금 비싸도 신선도와 손질 편의가 우선이고, 며칠 보관해야 한다면 낮은 단가보다 ${thirdKeyword}가 더 중요합니다. ${firstKeyword}가 좋아 보여도 실제 조리 횟수가 적으면 남는 양이 생기고, 그 순간 할인 효과는 사라집니다.`,
-    `${secondKeyword} 관점에서는 대체재를 미리 정해두는 것이 효과적입니다. ${seed.item}이 비싼 주간에는 같은 맛을 완벽히 흉내 내려고 하기보다 식감, 향, 단백질, 포만감처럼 메뉴 안에서 맡는 역할을 나눠 보세요. 그러면 ${seed.mainKeyword}가 평소보다 높아도 전체 식단을 무리하게 바꾸지 않고 비용을 조정할 수 있습니다.`,
-    `보관은 ${seed.item} 글에서 핵심 변수입니다. ${thirdKeyword}가 어렵거나 냉장 공간이 부족하면 ${seed.category} 특성에 맞는 소포장, 손질 제품, 냉동 대체품이 더 현실적일 수 있습니다. 반대로 조리 계획이 분명하고 가족이 반복해서 먹는 품목이라면 대용량 구매도 가능합니다. 중요한 것은 싼 가격을 찾은 뒤 보관을 생각하는 것이 아니라, ${seed.mainKeyword}를 보기 전에 보관 가능 기간을 정하는 순서입니다.`,
-    `마지막으로 ${seed.mainKeyword}는 기록해야 실력이 붙습니다. 구매 날짜, 포장 단위, 실제 소비일, 남은 양을 짧게 적어두면 다음번 ${firstKeyword} 판단이 훨씬 선명해집니다. 농수산물 가격은 매번 같지 않지만, 우리 집 소비 속도와 실패 패턴은 반복됩니다. 이 반복을 줄이는 것이 SEO 글을 읽고 끝내지 않고 식비를 실제로 낮추는 방법입니다.`,
+  if (pattern === 0) {
+    return withBulkQualityNotes(seed, index, [
+      `${mainTopic} 가족 단위 식비를 다시 계산하게 만드는 신호입니다. ${itemSubject} 한 번 사면 며칠씩 이어지는 품목이라서, 단가가 낮아 보여도 ${seed.angle}에 맞지 않으면 남는 양이 생깁니다. 이 글은 ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 한 줄 가격표가 아니라 실제 밥상에 올리는 순서로 해석합니다. ${profileFocus}`,
+      `먼저 이번 주에 ${itemObject} 어디에 쓸지 정해야 합니다. 주식, 반찬, 간식, 선물처럼 쓰임이 달라지면 적정 구매량도 달라집니다. ${firstSubject} 좋아 보일 때도 소비 속도가 느린 집이라면 소포장이 낫고, 반복 메뉴가 확실한 집이라면 조금 큰 포장이 유리할 수 있습니다.`,
+      `${secondKeyword}를 계산할 때는 품목값만 보지 말고 같이 들어가는 재료까지 보세요. ${itemSubject} 중심 재료인지 보조 재료인지에 따라 절약 포인트가 달라집니다. 중심 재료라면 품질을 낮추기보다 양을 조정하고, 보조 재료라면 비슷한 역할을 하는 다른 품목으로 바꾸는 편이 만족도가 높습니다.`,
+      `${thirdSubject} 불안하면 구매 후 처리 순서를 정해두는 것이 핵심입니다. 씻기, 손질, 소분, 냉장 또는 냉동 전환 중 하나라도 늦어지면 저렴하게 산 효과가 줄어듭니다. 특히 ${categoryTopic} 날씨와 보관 환경 영향을 받기 쉬워서 집에 도착한 뒤 첫 30분이 실제 식비를 좌우합니다.`,
+      `정리하면 ${mainObject} 볼 때는 “오늘 가격”보다 “우리 집에서 끝까지 먹을 수 있는가”가 먼저입니다. 구매 날짜와 남은 양을 메모하면 다음번 ${firstKeyword} 판단이 훨씬 빨라지고, ${secondKeyword}와 ${thirdKeyword}도 감이 아니라 기록으로 비교할 수 있습니다.`,
+    ]);
+  }
+
+  if (pattern === 1) {
+    return withBulkQualityNotes(seed, index, [
+      `${mainTopic} 건강식이나 식단 관리 목적과 함께 검색되는 경우가 많습니다. 하지만 건강해 보이는 품목도 자주 먹지 않으면 좋은 구매가 아닙니다. ${itemSubject} 맛, 조리 시간, 보관 난이도까지 함께 봐야 ${firstKeyword}와 ${secondKeyword}가 실제 절약으로 이어집니다.`,
+      `핵심은 혼합 비율이나 사용량을 작게 시작하는 것입니다. ${itemObject} 처음부터 큰 포장으로 사면 실패했을 때 남는 양이 큽니다. 반대로 한두 번 먹어 보고 식감과 조리 루틴이 맞는다면 그때 포장 단위를 키우는 편이 안전합니다.`,
+      `${secondKeyword} 관점에서는 같은 메뉴를 반복할 수 있는지가 중요합니다. 밥, 샐러드, 국물, 볶음처럼 여러 방식으로 쓰이는 품목은 단가가 조금 높아도 활용도가 높습니다. 반면 특정 레시피 하나에만 쓰인다면 ${thirdKeyword} 계획이 없을 때 손실 가능성이 커집니다.`,
+      `보관 단계에서는 봉투를 열기 전과 연 뒤를 나눠야 합니다. 밀폐, 습기 차단, 냉장 전환이 필요한 품목이라면 “싸게 샀다”는 판단이 보관 준비 뒤에 나와야 합니다. ${mainObject} 낮추는 가장 쉬운 방법은 할인 행사를 쫓는 것보다 버리는 양을 줄이는 것입니다.`,
+      `이 글의 결론은 간단합니다. ${firstKeyword}가 끌릴 때 바로 장바구니에 넣지 말고, 이번 주 식단에서 ${itemObject} 두 번 이상 쓸 수 있는지 먼저 확인하세요. 가능하면 구매, 어렵다면 대체 품목이나 소포장을 선택하는 것이 더 현실적입니다.`,
+    ]);
+  }
+
+  if (pattern === 2) {
+    return withBulkQualityNotes(seed, index, [
+      `${mainTopic} 제철이나 행사 수요와 만나면 체감 변동이 커집니다. ${itemSubject} 평소에는 부담이 적어 보여도 특정 시기에는 ${firstKeyword}와 ${secondKeyword}가 함께 움직이면서 장바구니 금액을 빠르게 키웁니다. 그래서 계절 품목은 가격보다 일정표를 먼저 봐야 합니다.`,
+      `행사용으로 살 때는 등급이나 크기보다 목적이 중요합니다. 선물이라면 보기 좋은 포장과 균일성이 필요하지만, 집에서 먹을 용도라면 흠이 조금 있어도 맛과 보관 상태가 더 중요할 수 있습니다. ${itemObject} 어떤 상황에 놓을지 정하면 불필요한 프리미엄을 줄일 수 있습니다.`,
+      `${secondKeyword}를 줄이려면 구매일을 앞당길 수 있는 품목과 당일에 사야 하는 품목을 나눠야 합니다. 오래 두어도 되는 재료는 미리 확보하고, 신선도가 핵심인 재료는 가까운 시점에 사는 편이 낫습니다. 이 구분이 없으면 할인보다 폐기 비용이 커집니다.`,
+      `${thirdSubject} 필요한 품목은 집에 도착한 뒤 바로 상태를 갈라야 합니다. 바로 먹을 것, 며칠 뒤 먹을 것, 조리나 가공으로 돌릴 것을 나누면 같은 상자 안에서도 손실을 줄일 수 있습니다. ${categoryTopic} 이런 선별 과정이 특히 중요합니다.`,
+      `${mainObject} 판단하는 최종 기준은 “싸게 샀는가”가 아니라 “목적에 맞는 품질을 필요한 만큼 샀는가”입니다. 다음 행사나 제철 장보기 때는 이번 구매에서 남은 양과 부족했던 양을 같이 기록해 두면 예산을 더 정확히 잡을 수 있습니다.`,
+    ]);
+  }
+
+  if (pattern === 3) {
+    return withBulkQualityNotes(seed, index, [
+      `${mainTopic} 조리 편의까지 포함해야 제대로 비교됩니다. ${itemSubject} 손질 전 무게와 실제 먹는 양이 다를 수 있고, 조리 과정에서 시간이나 부재료가 추가됩니다. 따라서 ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 한 번에 보되 “먹을 수 있는 최종 양”을 기준으로 삼아야 합니다.`,
+      `${seed.item} 손질 제품이 비싸 보일 때도 무조건 피할 필요는 없습니다. 바쁜 날 ${seed.angle}에 맞춰 손질 시간을 줄이면 외식이나 배달을 막는 효과가 더 클 수 있습니다. 반대로 주말에 여유가 있고 냉동 소분까지 할 수 있다면 원물 구매가 더 유리합니다.`,
+      `${secondKeyword}를 비교할 때는 메뉴 실패 가능성을 넣어야 합니다. ${itemObject} 처음 쓰는 레시피에 많이 넣으면 맛이 맞지 않았을 때 손실이 커집니다. 익숙한 메뉴에는 조금 넉넉히, 낯선 메뉴에는 작게 사는 방식이 더 안전합니다.`,
+      `${thirdSubject} 핵심이면 조리 전 상태 확인이 중요합니다. 냄새, 수분, 표면 상태, 포장 안 결로처럼 작은 신호가 보관 가능 시간을 알려줍니다. 이런 확인 없이 가격만 보고 사면 ${seed.mainKeyword} 절약 효과가 오래 가지 않습니다.`,
+      `결론적으로 ${itemObject} 살 때는 원물, 손질품, 냉동품을 같은 선에서 비교해야 합니다. 각각의 장단점을 적어두면 다음번 ${firstKeyword} 상황에서 더 빠르게 결정할 수 있고, 장보기 실패도 줄어듭니다.`,
+    ]);
+  }
+
+  if (pattern === 4) {
+    return withBulkQualityNotes(seed, index, [
+      `${mainTopic} 아이 식단이나 도시락처럼 반복 소비되는 상황에서 더 중요해집니다. ${itemSubject} 한 번의 가격보다 꾸준히 먹을 수 있는지, 질리지 않게 바꿔 쓸 수 있는지가 관건입니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 함께 보면 반복 메뉴의 부담을 줄일 수 있습니다.`,
+      `도시락이나 아침 식단에서는 손이 덜 가는 조합이 오래 갑니다. ${itemObject} 매번 새롭게 조리해야 한다면 좋은 가격에도 지속하기 어렵습니다. 씻어서 바로 쓰기, 데쳐 두기, 소분해 두기처럼 반복 가능한 준비 방식이 있어야 실제 절약이 됩니다.`,
+      `${secondKeyword}를 낮추려면 한 품목을 여러 역할로 돌리는 방법이 좋습니다. 반찬, 간식, 토핑, 국물 재료처럼 쓰임을 넓히면 남는 양이 줄어듭니다. 다만 맛과 식감이 강한 품목은 억지로 여러 메뉴에 넣기보다 적게 사는 편이 낫습니다.`,
+      `${thirdSubject} 실패하면 다음 장보기에서 같은 품목을 피하게 됩니다. 그래서 처음에는 작은 단위로 시작하고, 가족 반응이 확인되면 양을 늘리세요. ${categoryTopic} 선호도 차이가 식비 효율에 직접 영향을 주는 품목이 많습니다.`,
+      `${mainObject} 검색한 뒤 바로 할 일은 구매 후보를 하나로 고르는 것이 아니라 메뉴 후보를 두 개 적는 것입니다. 오늘 먹을 메뉴와 남았을 때 돌릴 메뉴가 있으면 ${firstKeyword}가 높은 날에도 덜 흔들립니다.`,
+    ]);
+  }
+
+  if (pattern === 5) {
+    return withBulkQualityNotes(seed, index, [
+      `${mainTopic} 공식 시세와 실제 매장 가격 사이의 차이를 이해해야 합니다. ${itemSubject} 지역, 포장 단위, 신선도, 구매처에 따라 체감 가격이 달라집니다. ${firstKeyword}만 보고 비싸다 싸다를 판단하면 ${secondKeyword}와 ${thirdKeyword}에서 놓치는 부분이 생깁니다.`,
+      `데이터를 볼 때는 평균값을 내 장바구니로 바로 옮기지 마세요. 평균은 흐름을 보는 데 좋지만, 오늘 내가 사는 포장 단위와 품질을 대신해주지는 않습니다. ${mainObject} 활용하려면 같은 단위로 환산하고, 최근 몇 번의 구매 기록과 비교해야 합니다.`,
+      `${secondKeyword}가 목적이라면 가격이 오른 이유보다 내가 바꿀 수 있는 행동을 먼저 찾는 편이 낫습니다. 구매처를 바꿀지, 양을 줄일지, 대체 품목을 넣을지, 보관 방식을 바꿀지 네 가지 중 하나만 정해도 장보기 결정이 빨라집니다.`,
+      `${thirdSubject} 변수라면 공식 출처와 생활 기록을 함께 봐야 합니다. 공식 자료는 큰 흐름을 알려주고, 집의 기록은 실제 실패 비용을 알려줍니다. 두 정보가 만날 때 ${seed.item} 구매 판단이 더 정확해집니다.`,
+      `따라서 ${mainTopic} 숫자 하나를 맞히는 글이 아니라 행동 기준을 세우는 글로 읽어야 합니다. 다음 장보기 전에는 ${firstKeyword} 확인, 냉장고 재고 점검, 대체 품목 선택을 같은 메모에 묶어 보세요.`,
+    ]);
+  }
+
+  if (pattern === 6) {
+    return withBulkQualityNotes(seed, index, [
+      `${mainTopic} 보관 공간이 작은 집에서 특히 까다롭습니다. ${itemSubject} 싸게 보이는 순간보다 집에 들어온 뒤 어디에 둘지가 먼저입니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 냉장고 칸과 냉동실 여유까지 포함해 판단해야 합니다.`,
+      `1인가구나 2인가구라면 큰 포장보다 소비 속도가 더 중요합니다. ${itemObject} 며칠 안에 끝내지 못하면 단가가 낮아도 손해가 됩니다. 소포장 가격이 높아 보여도 폐기 없이 먹는다면 실제 식비는 더 안정적일 수 있습니다.`,
+      `가족 단위라면 반대로 너무 작은 포장이 반복 구매 비용을 키웁니다. 자주 먹는 품목이라면 손질 후 소분해 두고, 잘 먹지 않는 품목은 메뉴를 정한 날만 사는 방식이 좋습니다. ${secondKeyword}는 가구 규모에 따라 완전히 다른 결론을 냅니다.`,
+      `${thirdSubject} 걸림돌이면 보관 전 처리 시간을 예약해 두세요. 장을 본 날 저녁에 손질할 수 없다면 구매량을 줄이는 것이 맞습니다. ${categoryTopic} 구매 후 관리 시간이 곧 품질 유지 시간입니다.`,
+      `${mainObject} 제대로 활용하려면 “우리 집 기준표”가 필요합니다. 잘 먹는 양, 자주 버리는 양, 냉장고에 남는 기간을 적어두면 다음번 ${firstKeyword}에서 흔들리지 않습니다.`,
+    ]);
+  }
+
+  if (pattern === 7) {
+    return withBulkQualityNotes(seed, index, [
+      `${mainTopic} 날씨 변화와 함께 볼 때 의미가 커집니다. ${itemSubject} 폭염, 장마, 한파 같은 조건에서 신선도와 이동 시간이 달라집니다. ${firstKeyword}가 좋아 보여도 집까지 가져오는 과정과 ${thirdKeyword}를 감당할 수 있는지가 먼저입니다.`,
+      `비가 오거나 더운 날에는 장보기 순서부터 바꾸세요. 상온에 오래 두면 품질이 떨어지는 품목은 마지막에 사고, 무겁거나 보관성이 좋은 품목은 먼저 사는 편이 낫습니다. 이 작은 순서가 ${secondKeyword}를 실제 절약으로 바꿉니다.`,
+      `${itemObject} 신선하게 쓰려면 매장에서 보는 기준도 달라야 합니다. 표면 수분, 포장 안 습기, 냄새, 손상 부위를 확인하고, 집에 도착한 뒤 바로 열을 빼거나 물기를 제거하세요. 날씨가 나쁜 날의 할인은 관리가 따라올 때만 이득입니다.`,
+      `${thirdSubject} 어려운 계절에는 대체 품목을 미리 정해야 합니다. 같은 메뉴를 고집하기보다 조리법을 바꾸면 식비와 품질을 동시에 지킬 수 있습니다. ${categoryTopic} 계절 리스크가 큰 만큼 메뉴 유연성이 중요합니다.`,
+      `결국 ${mainTopic} 날씨를 빼고 볼 수 없습니다. 오늘의 가격, 이동 시간, 보관 환경을 함께 적어두면 다음번 ${firstKeyword} 확인이 단순 정보 검색이 아니라 실제 장보기 전략이 됩니다.`,
+    ]);
+  }
+
+  if (pattern === 8) {
+    return withBulkQualityNotes(seed, index, [
+      `${mainTopic} 온라인 구매와 오프라인 구매의 기준이 다릅니다. ${itemSubject} 직접 보고 고를 때와 배송으로 받을 때 확인할 수 있는 정보가 다르기 때문입니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 구매 채널별로 나눠야 실패가 줄어듭니다.`,
+      `온라인에서는 후기보다 수령 조건이 먼저입니다. 언제 도착하는지, 바로 냉장할 수 있는지, 포장 단위가 실제 소비량에 맞는지를 확인해야 합니다. ${itemObject} 받는 시간이 애매하면 할인보다 신선도 리스크가 커질 수 있습니다.`,
+      `오프라인에서는 상태를 볼 수 있다는 장점이 있습니다. 대신 충동구매가 쉽습니다. ${secondKeyword}를 지키려면 매장에 가기 전에 대체 품목과 예산 한도를 정해두세요. 현장에서 가격이 좋아도 보관 계획이 없으면 장바구니에 넣지 않는 기준이 필요합니다.`,
+      `${thirdSubject} 핵심이라면 반품이나 교환 기준도 확인해야 합니다. 특히 ${categoryTopic} 포장 상태와 수령 시간이 품질에 영향을 줄 수 있으므로, 구매처 선택도 가격 비교의 일부입니다.`,
+      `${mainObject} 찾는 목적이 절약이라면 구매 채널을 고정하지 않는 편이 좋습니다. 자주 쓰는 품목은 오프라인 상태 확인, 반복 구매 품목은 온라인 단위 비교처럼 나누면 ${firstKeyword} 변동에도 더 유연하게 대응할 수 있습니다.`,
+    ]);
+  }
+
+  return withBulkQualityNotes(seed, index, [
+    `${mainTopic} 콘텐츠로 다룰 때는 독자가 바로 가져갈 답이 있어야 합니다. ${itemSubject} 가격, 보관, 대체재, 사용 예시가 함께 있어야 검색자가 페이지를 떠나지 않습니다. 그래서 ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 제목에 넣는 것만으로는 부족합니다.`,
+    `좋은 글은 먼저 짧게 결론을 말하고, 그다음 조건을 나눕니다. ${itemObject} 지금 사도 되는 경우와 기다려야 하는 경우를 분리하면 AEO 답변에도 유리하고, 사람도 빠르게 판단할 수 있습니다. ${profileFocus}`,
+    `${secondKeyword}는 본문 중간에서 구체적인 행동으로 연결해야 합니다. 예를 들어 구매량 줄이기, 대체 품목 고르기, 보관법 바꾸기, 내부 글로 이어가기처럼 다음 행동이 있어야 SEO 글이 단순 설명에서 벗어납니다.`,
+    `${thirdSubject} 들어간 문단은 신뢰도를 높이는 역할을 합니다. 공식 출처, 안전 기준, 보관 주의처럼 확인 가능한 내용을 붙이면 과장된 시세 글처럼 보이지 않습니다. ${categoryTopic} 특히 독자의 생활비와 안전이 연결되므로 근거가 중요합니다.`,
+    `${mainObject} 다룬 글의 마지막은 CTA로 끝나야 합니다. 독자에게 다음 장보기 메모, 관련 글 이동, 체크리스트 확인 중 하나를 제안하면 검색 유입이 사이트 안에서 이어지고 콘텐츠 품질도 더 선명해집니다.`,
+  ]);
+}
+
+function withBulkQualityNotes(
+  seed: BulkDraftSeed,
+  index: number,
+  paragraphs: string[],
+) {
+  const [firstKeyword, secondKeyword, thirdKeyword] = seed.expandedKeywords;
+  const notes = [
+    `${seed.item}을 장바구니에 넣기 전에는 포장 단위와 실제 소비일을 같이 적어 두면 ${seed.mainKeyword} 판단이 훨씬 구체적입니다.`,
+    `${firstKeyword}가 좋아 보여도 남은 재료를 처리할 메뉴가 없으면 절약 효과가 약해지므로, 구매 전 대체 메뉴를 하나 정해두세요.`,
+    `${secondKeyword}를 낮추려면 같은 역할을 하는 품목을 비교하되 맛, 식감, 손질 시간을 함께 봐야 만족도가 유지됩니다.`,
+    `${thirdKeyword}는 구매 직후 실행할수록 효과가 크기 때문에 집에 도착한 날 바로 손질하거나 소분하는 편이 안전합니다.`,
+    `${seed.category} 품목은 가격 변동보다 우리 집 소비 패턴이 더 큰 차이를 만들 때가 많으니, 이번 구매 결과를 다음 글이나 메모와 연결해 보세요.`,
   ];
+
+  return paragraphs.map(
+    (paragraph, paragraphIndex) =>
+      `${paragraph} ${notes[(index + paragraphIndex) % notes.length]!}`,
+  );
+}
+
+function withJosa(text: string, withFinal: string, withoutFinal: string) {
+  const last = text.trim().at(-1);
+  if (!last) {
+    return `${text}${withoutFinal}`;
+  }
+  const code = last.charCodeAt(0);
+  if (code < 0xac00 || code > 0xd7a3) {
+    return `${text}${withoutFinal}`;
+  }
+  return `${text}${(code - 0xac00) % 28 === 0 ? withoutFinal : withFinal}`;
 }
 
 drafts.push(...buildBulkDrafts());
