@@ -9,3 +9,5 @@ output/
 tsconfig.tsbuildinfo
 *.db
 *.db-journal
+
+.vercel

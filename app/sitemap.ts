@@ -6,13 +6,13 @@ import {
   loadPublicPagesSafe,
 } from "@/lib/content/db-pages";
 import { createDatabase } from "@/lib/db/client";
-import { isPublicLaunchAllowedForDb } from "@/lib/gates/public-launch";
+import { canExposePublicContentForDb } from "@/lib/gates/public-launch";
 import { buildSitemapEntries } from "@/lib/seo/sitemap";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const db = getOptionalDatabase(createDatabase);
 
-  if (!(await isPublicLaunchAllowedForDb(db))) {
+  if (!(await canExposePublicContentForDb(db))) {
     return [];
   }
 

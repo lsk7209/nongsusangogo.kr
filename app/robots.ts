@@ -2,13 +2,13 @@ import type { MetadataRoute } from "next";
 import { readEnv } from "@/lib/config/env";
 import { getOptionalDatabase } from "@/lib/content/db-pages";
 import { createDatabase } from "@/lib/db/client";
-import { isPublicLaunchAllowedForDb } from "@/lib/gates/public-launch";
+import { canExposePublicContentForDb } from "@/lib/gates/public-launch";
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const siteUrl = readEnv().SITE_URL;
   const db = getOptionalDatabase(createDatabase);
 
-  if (!(await isPublicLaunchAllowedForDb(db))) {
+  if (!(await canExposePublicContentForDb(db))) {
     return {
       rules: {
         userAgent: "*",

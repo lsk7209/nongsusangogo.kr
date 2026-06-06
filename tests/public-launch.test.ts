@@ -78,6 +78,10 @@ describe("public launch exposure policy", () => {
 
     await expect(loadPublicPagesSafe()).resolves.not.toHaveLength(0);
     await expect(loadKeywordPagesSafe()).resolves.not.toHaveLength(0);
+    await expect(sitemap()).resolves.not.toHaveLength(0);
+    await expect(robots()).resolves.toMatchObject({
+      sitemap: "https://nongsusangogo.kr/sitemap.xml",
+    });
   });
 
   it("keeps quality-passed DB pages hidden until drip-feed publishes them", async () => {
