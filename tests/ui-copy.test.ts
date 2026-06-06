@@ -21,5 +21,7 @@ describe("public UI copy", () => {
     expect(text).toContain("체크리스트");
     expect(text).toContain("자주 묻는 질문");
     expect(text).toContain("출처와 다음 행동");
+    expect(text).toContain("판단표");
+    expect(text).toContain("상황별 실행 기준");
   });
 });

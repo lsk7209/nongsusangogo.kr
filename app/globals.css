@@ -352,6 +352,98 @@ p {
   font-weight: 700;
 }
 
+.article-data-card {
+  border-left: 4px solid var(--article-accent, var(--accent));
+}
+
+.article-data-card p {
+  margin: 0 0 16px;
+}
+
+.responsive-table {
+  overflow-x: auto;
+}
+
+.responsive-table table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+}
+
+.responsive-table th,
+.responsive-table td {
+  border-bottom: 1px solid var(--line);
+  padding: 14px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.responsive-table thead th {
+  background: color-mix(in srgb, var(--article-accent, var(--accent)) 11%, #fffdf8);
+  color: var(--fg);
+  font-weight: 800;
+}
+
+.responsive-table tbody th {
+  width: 28%;
+  color: var(--article-accent, var(--accent));
+  font-weight: 800;
+}
+
+.responsive-table tr:last-child th,
+.responsive-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.article-scenario-card {
+  border-left: 4px solid var(--article-warm, var(--warn));
+}
+
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.scenario-grid article {
+  min-height: 190px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--article-warm, var(--warn)) 10%, #fffdf8),
+      #fffdf8 54%
+    );
+  padding: 16px;
+}
+
+.scenario-grid span {
+  display: inline-flex;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--article-accent, var(--accent)) 12%, #fffdf8);
+  color: var(--article-accent, var(--accent));
+  padding: 5px 9px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.scenario-grid h3 {
+  margin-top: 14px;
+  color: var(--fg);
+}
+
+.scenario-grid p {
+  margin: 0;
+  font-size: 15px;
+}
+
 .article-panel-accent {
   border-top: 3px solid var(--article-accent, var(--accent));
 }
@@ -551,7 +643,8 @@ p {
   .metric-grid,
   .card-grid,
   .blog-card-grid,
-  .featured-post {
+  .featured-post,
+  .scenario-grid {
     grid-template-columns: 1fr;
   }
 
