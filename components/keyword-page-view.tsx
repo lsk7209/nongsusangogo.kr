@@ -37,7 +37,6 @@ export function KeywordPageView({ page }: { page: KeywordPage }) {
           {page.relatedLinks.map((link) => (
             <a className="card" href={link.href} key={link.href}>
               <h3>{link.label}</h3>
-              <p>{link.href}</p>
             </a>
           ))}
         </div>
@@ -46,4 +45,3 @@ export function KeywordPageView({ page }: { page: KeywordPage }) {
     </main>
   );
 }
-

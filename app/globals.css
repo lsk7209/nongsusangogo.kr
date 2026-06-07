@@ -313,6 +313,22 @@ p {
   border-left: 4px solid var(--article-accent, var(--accent));
 }
 
+.article-hero-image {
+  margin: 22px 0 26px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface-strong);
+}
+
+.article-hero-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 .article-elements {
   display: flex;
   flex-wrap: wrap;

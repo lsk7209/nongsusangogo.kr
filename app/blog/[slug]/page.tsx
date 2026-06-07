@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { AdSlot } from "@/components/ad-slot";
 import { Disclosure } from "@/components/disclosure";
@@ -39,6 +40,14 @@ export function generateMetadata({ params }: PageProps): Metadata {
       title: post.title,
       description: post.excerpt,
       type: "article",
+      images: [
+        {
+          url: `${readEnv().SITE_URL}/images/nongsusan-article-hero.png`,
+          width: 1200,
+          height: 675,
+          alt: "농수산고고 농수산품 대표 이미지",
+        },
+      ],
     },
   };
 }
@@ -158,6 +167,17 @@ export default function BlogPostPage({ params }: PageProps) {
       </p>
       <h1>{post.title}</h1>
       <p className="subtitle">{post.subtitle}</p>
+
+      <figure className="article-hero-image">
+        <Image
+          src="/images/nongsusan-article-hero.png"
+          alt={`${post.category} 농수산품 장보기 이미지`}
+          width={1200}
+          height={675}
+          priority
+          sizes="(max-width: 768px) 100vw, 960px"
+        />
+      </figure>
 
       <section className="panel article-answer">
         <h2>빠른 답변</h2>
@@ -287,7 +307,6 @@ export default function BlogPostPage({ params }: PageProps) {
           {post.internalLinks.map((link) => (
             <a className="card" href={link.href} key={link.href}>
               <h3>{link.label}</h3>
-              <p>{link.href}</p>
             </a>
           ))}
         </div>
