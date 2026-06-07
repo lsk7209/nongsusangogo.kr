@@ -632,6 +632,46 @@ p {
   color: var(--muted);
 }
 
+.legal-page {
+  max-width: 860px;
+}
+
+.site-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+  align-items: start;
+  margin-top: 56px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+  color: var(--muted);
+}
+
+.site-footer strong {
+  display: block;
+  color: var(--fg);
+  font-size: 16px;
+}
+
+.site-footer p {
+  max-width: 580px;
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px 14px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.site-footer a {
+  color: var(--fg);
+}
+
 .tool {
   display: grid;
   gap: 14px;
@@ -754,6 +794,14 @@ p {
   .blog-card,
   .featured-post {
     padding: 18px;
+  }
+
+  .site-footer {
+    grid-template-columns: 1fr;
+  }
+
+  .site-footer nav {
+    justify-content: flex-start;
   }
 
   .chart-row {

@@ -1,12 +1,11 @@
 export function Disclosure() {
   return (
-    <section className="disclosure" aria-label="source and disclaimer">
+    <section className="disclosure" aria-label="데이터 출처와 편집 기준">
       <p>
-        출처: KAMIS 공공데이터 연동을 전제로 한 검증용 구현입니다. 현재 페이지는
-        샘플 데이터로 렌더링되며, 상업 재배포 라이선스 확인 전 실데이터 공개
-        발행은 차단됩니다. AI 보강 문장은 품질 게이트 검증 대상입니다.
+        농수산고고는 공공 통계와 공식 기관 자료를 참고해 장보기 판단 기준을
+        설명합니다. 실시간 가격 데이터는 출처와 이용 조건이 확인된 범위에서만
+        표시하며, 확인되지 않은 값은 확정 시세처럼 안내하지 않습니다.
       </p>
     </section>
   );
 }
-

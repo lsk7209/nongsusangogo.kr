@@ -17,6 +17,13 @@ describe("/api/status", () => {
   });
 
   it("reports env readiness when database is not configured", async () => {
+    delete process.env.TURSO_DATABASE_URL;
+    delete process.env.TURSO_AUTH_TOKEN;
+    delete process.env.CRON_SECRET;
+    delete process.env.KAMIS_BASE_URL;
+    delete process.env.KAMIS_CERT_ID;
+    delete process.env.KAMIS_CERT_KEY;
+
     const { GET, dynamic } = await import("@/app/api/status/route");
     const response = await GET();
     const body = await response.json();
@@ -25,7 +32,11 @@ describe("/api/status", () => {
     expect(body.service).toBe("nongsusangogo");
     expect(body.readinessSource).toBe("env");
     expect(body.cronAuthConfigured).toBe(false);
-    expect(body.operationalWarnings).toEqual([]);
+    expect(body.dataMode).toBe("fixture_fallback");
+    expect(body.kamisApiConfigured).toBe(false);
+    expect(body.operationalWarnings).toContain(
+      "KAMIS API credentials are not configured; price pages use fixture fallback data.",
+    );
     expect(body.db.connected).toBe(false);
     expect(
       body.blockedChecks.map((check: { id: string }) => check.id),
@@ -117,6 +128,8 @@ describe("/api/status", () => {
     expect(body.readinessSource).toBe("db");
     expect(body.publicLaunchAllowed).toBe(true);
     expect(body.cronAuthConfigured).toBe(false);
+    expect(body.dataMode).toBe("fixture_fallback");
+    expect(body.kamisApiConfigured).toBe(false);
     expect(body.db.connected).toBe(true);
     expect(body.db.latestGateRun).toMatchObject({
       id: runId,

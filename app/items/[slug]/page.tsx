@@ -100,11 +100,18 @@ export default async function ItemPage({ params }: PageProps) {
         </div>
         <div className="metric">
           <span>상태</span>
-          <strong>품질 통과</strong>
+          <strong>참고 기준</strong>
         </div>
       </section>
 
       <div className="section-stack">
+        <section className="notice">
+          <p>
+            이 페이지의 가격 표시는 장보기 판단 구조를 설명하기 위한 참고
+            기준입니다. 실시간 API 가격은 출처와 이용 조건이 확인된 뒤 공개
+            범위를 분리해 표시합니다.
+          </p>
+        </section>
         <section className="panel">
           <h2>시계열 비교</h2>
           <PriceChart observations={page.observations} />

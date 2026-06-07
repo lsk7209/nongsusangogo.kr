@@ -57,11 +57,11 @@ export default async function Home() {
     <main>
       <section className="hero-grid">
         <div>
-          <p className="eyebrow">KAMIS price intelligence</p>
-          <h1>농수산물 시세를 품질 게이트 뒤에서 비교합니다.</h1>
+          <p className="eyebrow">농수산물 장보기 가이드</p>
+          <h1>농수산물 가격 흐름을 장보기 기준으로 풀어봅니다.</h1>
           <p>
-            현재 화면은 검증용 샘플 데이터로 구성된 SSR 사이트입니다. 단위,
-            지역, 등급, 도소매 조인은 확인 전까지 격리되어 있습니다.
+            채소, 과일, 수산물, 축산물의 가격 변동을 생활비 관점에서 해석하고
+            구매 타이밍, 보관 손실, 대체재 선택 기준을 함께 정리합니다.
           </p>
         </div>
         <section className="panel" aria-label="featured price">
@@ -72,16 +72,16 @@ export default async function Home() {
 
       <section className="metric-grid" aria-label="quality metrics">
         <div className="metric">
-          <span>품질 통과 샘플</span>
+          <span>공개 콘텐츠</span>
           <strong>{pages.length}</strong>
         </div>
         <div className="metric">
-          <span>발행 상태</span>
-          <strong>보류</strong>
+          <span>편집 기준</span>
+          <strong>출처 확인</strong>
         </div>
         <div className="metric">
-          <span>지역 차원</span>
-          <strong>옵션</strong>
+          <span>독자 목표</span>
+          <strong>생활비 절감</strong>
         </div>
       </section>
 
@@ -99,7 +99,7 @@ export default async function Home() {
           </div>
         </div>
         <div>
-          <h2>품질 통과 페이지</h2>
+          <h2>가격 기준 예시</h2>
           <div className="card-grid">
             {pages.map((page) => (
               <a className="card" href={`/items/${page.slug}`} key={page.slug}>

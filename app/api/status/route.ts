@@ -17,6 +17,11 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const dbConfigured = Boolean(process.env.TURSO_DATABASE_URL);
   const cronAuthConfigured = Boolean(process.env.CRON_SECRET);
+  const kamisApiConfigured = Boolean(
+    process.env.KAMIS_BASE_URL &&
+      process.env.KAMIS_CERT_ID &&
+      process.env.KAMIS_CERT_KEY,
+  );
   const db = dbConfigured ? createDatabase() : null;
   const readinessResult = await getReadiness(db);
   const readiness = readinessResult.readiness;
@@ -31,8 +36,13 @@ export async function GET() {
     readinessError: readinessResult.error,
     publicLaunchAllowed: readiness.publicLaunchAllowed,
     fixtureFallbackEnabled: canUseFixturePublicFallback(),
+    dataMode: kamisApiConfigured ? "kamis_api" : "fixture_fallback",
+    kamisApiConfigured,
     cronAuthConfigured,
-    operationalWarnings: operationalWarnings({ cronAuthConfigured }),
+    operationalWarnings: operationalWarnings({
+      cronAuthConfigured,
+      kamisApiConfigured,
+    }),
     blockedChecks: readiness.checks.filter(
       (check) => check.status === "pending" || check.status === "fail",
     ),
@@ -50,12 +60,21 @@ function publishedPageCount(pageCounts: Record<string, number> | undefined) {
   return pageCounts?.published ?? 0;
 }
 
-function operationalWarnings(options: { cronAuthConfigured: boolean }) {
+function operationalWarnings(options: {
+  cronAuthConfigured: boolean;
+  kamisApiConfigured: boolean;
+}) {
   const warnings: string[] = [];
 
   if (process.env.NODE_ENV === "production" && !options.cronAuthConfigured) {
     warnings.push(
       "CRON_SECRET is not configured; publish cron is unauthenticated.",
+    );
+  }
+
+  if (!options.kamisApiConfigured) {
+    warnings.push(
+      "KAMIS API credentials are not configured; price pages use fixture fallback data.",
     );
   }
 

@@ -81,6 +81,22 @@ export default function RootLayout({
             </div>
           </nav>
           {children}
+          <footer className="site-footer">
+            <div>
+              <strong>농수산고고</strong>
+              <p>
+                농수산물 가격 흐름, 장보기 타이밍, 보관 손실, 대체재 선택
+                기준을 생활 관점으로 정리합니다.
+              </p>
+            </div>
+            <nav aria-label="사이트 정보">
+              <a href="/about">소개</a>
+              <a href="/contact">문의</a>
+              <a href="/privacy">개인정보 처리방침</a>
+              <a href="/terms">이용약관</a>
+              <a href="/rss.xml">RSS</a>
+            </nav>
+          </footer>
         </div>
         <nav className="bottom-tabs" aria-label="모바일 주요 메뉴">
           <a href="/">홈</a>
