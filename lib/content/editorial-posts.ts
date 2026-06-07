@@ -2712,6 +2712,15 @@ function buildBulkDrafts(): PostDraft[] {
   return [...bulkDraftSeeds, ...additionalBulkDraftSeeds].map((seed, index) => {
     const profile = formatProfiles[index % formatProfiles.length]!;
     const [firstKeyword, secondKeyword, thirdKeyword] = seed.expandedKeywords;
+    const mainTopic = withJosa(seed.mainKeyword, "은", "는");
+    const mainObject = withJosa(seed.mainKeyword, "을", "를");
+    const itemTopic = withJosa(seed.item, "은", "는");
+    const itemObject = withJosa(seed.item, "을", "를");
+    const firstSubject = withJosa(firstKeyword, "이", "가");
+    const firstWithAnd = withJosa(firstKeyword, "과", "와");
+    const secondWithAnd = withJosa(secondKeyword, "과", "와");
+    const thirdObject = withJosa(thirdKeyword, "을", "를");
+    const isContentPost = seed.category === "콘텐츠";
     const relatedSlug = relatedBlogSlugs[index % relatedBlogSlugs.length]!;
     const secondRelatedSlug =
       relatedBlogSlugs[(index + 3) % relatedBlogSlugs.length]!;
@@ -2725,31 +2734,54 @@ function buildBulkDrafts(): PostDraft[] {
       category: seed.category,
       intent: seed.intent,
       excerpt: cleanGeneratedKoreanText(
-        `${seed.mainKeyword}는 단순히 오늘 가격이 싼지 비싼지로 끝나는 문제가 아닙니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 함께 보면 ${seed.angle}에 맞는 구매량과 보관 방식을 더 정확히 정할 수 있습니다.`,
+        isContentPost
+          ? `${mainTopic} 단순한 키워드 배치가 아니라 검색자가 바로 이해하고 행동할 수 있게 만드는 운영 기준입니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 함께 보면 ${seed.angle}에 맞는 글 구조를 더 정확히 잡을 수 있습니다.`
+          : `${mainTopic} 단순히 오늘 가격이 싼지 비싼지로 끝나는 문제가 아닙니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 함께 보면 ${seed.angle}에 맞는 구매량과 보관 방식을 더 정확히 정할 수 있습니다.`,
       ),
       quickAnswer: cleanGeneratedKoreanText(
-        `${seed.mainKeyword}를 판단할 때는 ${firstKeyword}만 보지 말고 ${secondKeyword}와 ${thirdKeyword}까지 함께 확인해야 합니다. ${seed.item}은 가격표보다 실제로 먹는 양, 보관 중 손실, 대체 가능한 메뉴가 결과를 크게 바꾸므로 필요한 기간과 조리 계획을 먼저 정하는 편이 안전합니다.`,
+        isContentPost
+          ? `${mainObject} 판단할 때는 ${firstKeyword}만 보지 말고 ${secondWithAnd} ${thirdKeyword}까지 함께 확인해야 합니다. ${itemTopic} 제목, 첫 답변, 본문 근거, 내부 링크, CTA가 같은 검색 의도를 향할 때 얇은 글처럼 보이지 않고 사이트 안에서 다음 행동으로 이어집니다.`
+          : `${mainObject} 판단할 때는 ${firstKeyword}만 보지 말고 ${secondWithAnd} ${thirdKeyword}까지 함께 확인해야 합니다. ${itemTopic} 가격표보다 실제로 먹는 양, 보관 중 손실, 대체 가능한 메뉴가 결과를 크게 바꾸므로 필요한 기간과 조리 계획을 먼저 정하는 편이 안전합니다.`,
       ),
       body: buildBulkBody(seed, index, profile.focus).map(
         cleanGeneratedKoreanText,
       ),
-      checklist: [
-        `${seed.item}을 실제로 먹을 날짜와 인원을 먼저 적기`,
-        `${firstKeyword} 기준으로 필요한 양과 남을 가능성 나누기`,
-        `${secondKeyword} 때문에 대체 가능한 품목이나 메뉴를 하나 확보하기`,
-        `${thirdKeyword} 조건이 맞지 않으면 대용량 구매를 보류하기`,
-        `구매 뒤 하루 안에 손질, 소분, 보관 중 하나를 실행하기`,
-      ],
-      faq: [
-        {
-          question: `${seed.mainKeyword}는 언제 확인하는 게 좋을까요?`,
-          answer: `${seed.mainKeyword}는 장보기 직전 한 번만 보는 것보다 이번 주 메뉴와 보관 여건이 정해졌을 때 확인하는 편이 좋습니다. 그래야 ${firstKeyword} 정보가 실제 구매량 결정으로 이어집니다.`,
-        },
-        {
-          question: `${seed.item}을 대량으로 사도 괜찮을까요?`,
-          answer: `대량 구매는 ${secondKeyword} 계획이 분명하고 ${thirdKeyword}를 관리할 수 있을 때만 유리합니다. 가격이 낮아도 남기거나 버리면 체감 식비는 오히려 올라갑니다.`,
-        },
-      ],
+      checklist: isContentPost
+        ? [
+            `${firstKeyword}가 제목과 첫 문단 앞쪽에 자연스럽게 들어갔는지 확인하기`,
+            `${secondKeyword}를 설명하는 문단에 실제 예시와 실패 조건 넣기`,
+            `${thirdKeyword}가 FAQ, CTA, 내부 링크와 같은 의도로 연결되는지 점검하기`,
+            `예약글 링크가 공개 전 노출되지 않는지 확인하기`,
+            `색상 강조가 표, 체크리스트, 요약 영역에만 제한적으로 쓰였는지 보기`,
+          ]
+        : [
+            `${itemObject} 실제로 먹을 날짜와 인원을 먼저 적기`,
+            `${firstKeyword} 기준으로 필요한 양과 남을 가능성 나누기`,
+            `${secondKeyword} 때문에 대체 가능한 품목이나 메뉴를 하나 확보하기`,
+            `${thirdKeyword} 조건이 맞지 않으면 대용량 구매를 보류하기`,
+            `구매 뒤 하루 안에 손질, 소분, 보관 중 하나를 실행하기`,
+          ],
+      faq: isContentPost
+        ? [
+            {
+              question: `${mainTopic} 언제 점검하는 게 좋을까요?`,
+              answer: `${mainTopic} 초안 작성 직후보다 발행 직전 점검하는 편이 좋습니다. 제목, 메타 설명, 첫 답변, 내부 링크, CTA가 같은 검색 의도를 향하는지 확인해야 ${firstSubject} 실제 클릭 이후 만족도로 이어집니다.`,
+            },
+            {
+              question: `${itemObject} 어떻게 보완하면 얇은 글처럼 보이지 않을까요?`,
+              answer: `${secondKeyword}만 반복하지 말고 구체적인 예시, 예외 조건, 다음 행동을 함께 넣어야 합니다. ${thirdObject} 본문 후반에서 행동 유도 문장과 연결하면 독자가 읽고 바로 실행할 수 있습니다.`,
+            },
+          ]
+        : [
+            {
+              question: `${mainTopic} 언제 확인하는 게 좋을까요?`,
+              answer: `${mainTopic} 장보기 직전 한 번만 보는 것보다 이번 주 메뉴와 보관 여건이 정해졌을 때 확인하는 편이 좋습니다. 그래야 ${firstKeyword} 정보가 실제 구매량 결정으로 이어집니다.`,
+            },
+            {
+              question: `${itemObject} 대량으로 사도 괜찮을까요?`,
+              answer: `대량 구매는 ${secondKeyword} 계획이 분명하고 ${thirdObject} 관리할 수 있을 때만 유리합니다. 가격이 낮아도 남기거나 버리면 체감 식비는 오히려 올라갑니다.`,
+            },
+          ],
       internalLinks: [
         { href: `/blog/${relatedSlug}`, label: "비슷한 장보기 판단 기준 보기" },
         { href: `/blog/${secondRelatedSlug}`, label: "보관 손실 줄이는 글로 이어서 보기" },
@@ -2761,7 +2793,9 @@ function buildBulkDrafts(): PostDraft[] {
         note: `${seed.category} 가격과 식품 정보를 확인할 때 참고할 수 있는 공식 출처입니다.`,
       },
       cta: cleanGeneratedKoreanText(
-        `${seed.mainKeyword}를 확인했다면 오늘 장바구니에 넣을 ${seed.item} 양을 한 번 줄여 적고, ${firstKeyword}와 ${thirdKeyword} 기준으로 다음 장보기 메모를 남겨두세요.`,
+        isContentPost
+          ? `${mainObject} 점검했다면 지금 글의 첫 문단, 내부 링크, CTA를 차례로 다시 보고 ${firstWithAnd} ${thirdKeyword} 기준으로 발행 전 체크 메모를 남겨두세요.`
+          : `${mainObject} 확인했다면 오늘 장바구니에 넣을 ${seed.item} 양을 한 번 줄여 적고, ${firstWithAnd} ${thirdKeyword} 기준으로 다음 장보기 메모를 남겨두세요.`,
       ),
       contentElements: [...profile.elements],
       accentColors: seed.accentColors,
@@ -2784,7 +2818,11 @@ function buildBulkBody(
   const mainTopic = withJosa(seed.mainKeyword, "은", "는");
   const mainObject = withJosa(seed.mainKeyword, "을", "를");
   const thirdSubject = withJosa(thirdKeyword, "이", "가");
+  const thirdObject = withJosa(thirdKeyword, "을", "를");
   const firstSubject = withJosa(firstKeyword, "이", "가");
+  const firstWithAnd = withJosa(firstKeyword, "과", "와");
+  const secondSubject = withJosa(secondKeyword, "이", "가");
+  const secondObject = withJosa(secondKeyword, "을", "를");
   const categoryTopic = withJosa(seed.category, "은", "는");
   const pattern = index % 10;
 
@@ -2792,7 +2830,7 @@ function buildBulkBody(
     return withBulkQualityNotes(seed, index, [
       `${mainTopic} 가족 단위 식비를 다시 계산하게 만드는 신호입니다. ${itemSubject} 한 번 사면 며칠씩 이어지는 품목이라서, 단가가 낮아 보여도 ${seed.angle}에 맞지 않으면 남는 양이 생깁니다. 이 글은 ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 한 줄 가격표가 아니라 실제 밥상에 올리는 순서로 해석합니다. ${profileFocus}`,
       `먼저 이번 주에 ${itemObject} 어디에 쓸지 정해야 합니다. 주식, 반찬, 간식, 선물처럼 쓰임이 달라지면 적정 구매량도 달라집니다. ${firstSubject} 좋아 보일 때도 소비 속도가 느린 집이라면 소포장이 낫고, 반복 메뉴가 확실한 집이라면 조금 큰 포장이 유리할 수 있습니다.`,
-      `${secondKeyword}를 계산할 때는 품목값만 보지 말고 같이 들어가는 재료까지 보세요. ${itemSubject} 중심 재료인지 보조 재료인지에 따라 절약 포인트가 달라집니다. 중심 재료라면 품질을 낮추기보다 양을 조정하고, 보조 재료라면 비슷한 역할을 하는 다른 품목으로 바꾸는 편이 만족도가 높습니다.`,
+      `${secondObject} 계산할 때는 품목값만 보지 말고 같이 들어가는 재료까지 보세요. ${itemSubject} 중심 재료인지 보조 재료인지에 따라 절약 포인트가 달라집니다. 중심 재료라면 품질을 낮추기보다 양을 조정하고, 보조 재료라면 비슷한 역할을 하는 다른 품목으로 바꾸는 편이 만족도가 높습니다.`,
       `${thirdSubject} 불안하면 구매 후 처리 순서를 정해두는 것이 핵심입니다. 씻기, 손질, 소분, 냉장 또는 냉동 전환 중 하나라도 늦어지면 저렴하게 산 효과가 줄어듭니다. 특히 ${categoryTopic} 날씨와 보관 환경 영향을 받기 쉬워서 집에 도착한 뒤 첫 30분이 실제 식비를 좌우합니다.`,
       `정리하면 ${mainObject} 볼 때는 “오늘 가격”보다 “우리 집에서 끝까지 먹을 수 있는가”가 먼저입니다. 구매 날짜와 남은 양을 메모하면 다음번 ${firstKeyword} 판단이 훨씬 빨라지고, ${secondKeyword}와 ${thirdKeyword}도 감이 아니라 기록으로 비교할 수 있습니다.`,
     ]);
@@ -2810,9 +2848,9 @@ function buildBulkBody(
 
   if (pattern === 2) {
     return withBulkQualityNotes(seed, index, [
-      `${mainTopic} 제철이나 행사 수요와 만나면 체감 변동이 커집니다. ${itemSubject} 평소에는 부담이 적어 보여도 특정 시기에는 ${firstKeyword}와 ${secondKeyword}가 함께 움직이면서 장바구니 금액을 빠르게 키웁니다. 그래서 계절 품목은 가격보다 일정표를 먼저 봐야 합니다.`,
+      `${mainTopic} 제철이나 행사 수요와 만나면 체감 변동이 커집니다. ${itemSubject} 평소에는 부담이 적어 보여도 특정 시기에는 ${firstWithAnd} ${secondSubject} 함께 움직이면서 장바구니 금액을 빠르게 키웁니다. 그래서 계절 품목은 가격보다 일정표를 먼저 봐야 합니다.`,
       `행사용으로 살 때는 등급이나 크기보다 목적이 중요합니다. 선물이라면 보기 좋은 포장과 균일성이 필요하지만, 집에서 먹을 용도라면 흠이 조금 있어도 맛과 보관 상태가 더 중요할 수 있습니다. ${itemObject} 어떤 상황에 놓을지 정하면 불필요한 프리미엄을 줄일 수 있습니다.`,
-      `${secondKeyword}를 줄이려면 구매일을 앞당길 수 있는 품목과 당일에 사야 하는 품목을 나눠야 합니다. 오래 두어도 되는 재료는 미리 확보하고, 신선도가 핵심인 재료는 가까운 시점에 사는 편이 낫습니다. 이 구분이 없으면 할인보다 폐기 비용이 커집니다.`,
+      `${secondObject} 줄이려면 구매일을 앞당길 수 있는 품목과 당일에 사야 하는 품목을 나눠야 합니다. 오래 두어도 되는 재료는 미리 확보하고, 신선도가 핵심인 재료는 가까운 시점에 사는 편이 낫습니다. 이 구분이 없으면 할인보다 폐기 비용이 커집니다.`,
       `${thirdSubject} 필요한 품목은 집에 도착한 뒤 바로 상태를 갈라야 합니다. 바로 먹을 것, 며칠 뒤 먹을 것, 조리나 가공으로 돌릴 것을 나누면 같은 상자 안에서도 손실을 줄일 수 있습니다. ${categoryTopic} 이런 선별 과정이 특히 중요합니다.`,
       `${mainObject} 판단하는 최종 기준은 “싸게 샀는가”가 아니라 “목적에 맞는 품질을 필요한 만큼 샀는가”입니다. 다음 행사나 제철 장보기 때는 이번 구매에서 남은 양과 부족했던 양을 같이 기록해 두면 예산을 더 정확히 잡을 수 있습니다.`,
     ]);
@@ -2822,7 +2860,7 @@ function buildBulkBody(
     return withBulkQualityNotes(seed, index, [
       `${mainTopic} 조리 편의까지 포함해야 제대로 비교됩니다. ${itemSubject} 손질 전 무게와 실제 먹는 양이 다를 수 있고, 조리 과정에서 시간이나 부재료가 추가됩니다. 따라서 ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 한 번에 보되 “먹을 수 있는 최종 양”을 기준으로 삼아야 합니다.`,
       `${seed.item} 손질 제품이 비싸 보일 때도 무조건 피할 필요는 없습니다. 바쁜 날 ${seed.angle}에 맞춰 손질 시간을 줄이면 외식이나 배달을 막는 효과가 더 클 수 있습니다. 반대로 주말에 여유가 있고 냉동 소분까지 할 수 있다면 원물 구매가 더 유리합니다.`,
-      `${secondKeyword}를 비교할 때는 메뉴 실패 가능성을 넣어야 합니다. ${itemObject} 처음 쓰는 레시피에 많이 넣으면 맛이 맞지 않았을 때 손실이 커집니다. 익숙한 메뉴에는 조금 넉넉히, 낯선 메뉴에는 작게 사는 방식이 더 안전합니다.`,
+      `${secondObject} 비교할 때는 메뉴 실패 가능성을 넣어야 합니다. ${itemObject} 처음 쓰는 레시피에 많이 넣으면 맛이 맞지 않았을 때 손실이 커집니다. 익숙한 메뉴에는 조금 넉넉히, 낯선 메뉴에는 작게 사는 방식이 더 안전합니다.`,
       `${thirdSubject} 핵심이면 조리 전 상태 확인이 중요합니다. 냄새, 수분, 표면 상태, 포장 안 결로처럼 작은 신호가 보관 가능 시간을 알려줍니다. 이런 확인 없이 가격만 보고 사면 ${seed.mainKeyword} 절약 효과가 오래 가지 않습니다.`,
       `결론적으로 ${itemObject} 살 때는 원물, 손질품, 냉동품을 같은 선에서 비교해야 합니다. 각각의 장단점을 적어두면 다음번 ${firstKeyword} 상황에서 더 빠르게 결정할 수 있고, 장보기 실패도 줄어듭니다.`,
     ]);
@@ -2832,7 +2870,7 @@ function buildBulkBody(
     return withBulkQualityNotes(seed, index, [
       `${mainTopic} 아이 식단이나 도시락처럼 반복 소비되는 상황에서 더 중요해집니다. ${itemSubject} 한 번의 가격보다 꾸준히 먹을 수 있는지, 질리지 않게 바꿔 쓸 수 있는지가 관건입니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 함께 보면 반복 메뉴의 부담을 줄일 수 있습니다.`,
       `도시락이나 아침 식단에서는 손이 덜 가는 조합이 오래 갑니다. ${itemObject} 매번 새롭게 조리해야 한다면 좋은 가격에도 지속하기 어렵습니다. 씻어서 바로 쓰기, 데쳐 두기, 소분해 두기처럼 반복 가능한 준비 방식이 있어야 실제 절약이 됩니다.`,
-      `${secondKeyword}를 낮추려면 한 품목을 여러 역할로 돌리는 방법이 좋습니다. 반찬, 간식, 토핑, 국물 재료처럼 쓰임을 넓히면 남는 양이 줄어듭니다. 다만 맛과 식감이 강한 품목은 억지로 여러 메뉴에 넣기보다 적게 사는 편이 낫습니다.`,
+      `${secondKeyword} 부담을 줄이려면 한 품목을 여러 역할로 돌리는 방법이 좋습니다. 반찬, 간식, 토핑, 국물 재료처럼 쓰임을 넓히면 남는 양이 줄어듭니다. 다만 맛과 식감이 강한 품목은 억지로 여러 메뉴에 넣기보다 적게 사는 편이 낫습니다.`,
       `${thirdSubject} 실패하면 다음 장보기에서 같은 품목을 피하게 됩니다. 그래서 처음에는 작은 단위로 시작하고, 가족 반응이 확인되면 양을 늘리세요. ${categoryTopic} 선호도 차이가 식비 효율에 직접 영향을 주는 품목이 많습니다.`,
       `${mainObject} 검색한 뒤 바로 할 일은 구매 후보를 하나로 고르는 것이 아니라 메뉴 후보를 두 개 적는 것입니다. 오늘 먹을 메뉴와 남았을 때 돌릴 메뉴가 있으면 ${firstKeyword}가 높은 날에도 덜 흔들립니다.`,
     ]);
@@ -2860,19 +2898,19 @@ function buildBulkBody(
 
   if (pattern === 7) {
     return withBulkQualityNotes(seed, index, [
-      `${mainTopic} 날씨 변화와 함께 볼 때 의미가 커집니다. ${itemSubject} 폭염, 장마, 한파 같은 조건에서 신선도와 이동 시간이 달라집니다. ${firstKeyword}가 좋아 보여도 집까지 가져오는 과정과 ${thirdKeyword}를 감당할 수 있는지가 먼저입니다.`,
-      `비가 오거나 더운 날에는 장보기 순서부터 바꾸세요. 상온에 오래 두면 품질이 떨어지는 품목은 마지막에 사고, 무겁거나 보관성이 좋은 품목은 먼저 사는 편이 낫습니다. 이 작은 순서가 ${secondKeyword}를 실제 절약으로 바꿉니다.`,
-      `${itemObject} 신선하게 쓰려면 매장에서 보는 기준도 달라야 합니다. 표면 수분, 포장 안 습기, 냄새, 손상 부위를 확인하고, 집에 도착한 뒤 바로 열을 빼거나 물기를 제거하세요. 날씨가 나쁜 날의 할인은 관리가 따라올 때만 이득입니다.`,
+      `${mainTopic} 보관 조건과 구매처 차이를 함께 볼 때 의미가 커집니다. ${itemSubject} 매장 상태, 포장 방식, 집까지 이동 시간에 따라 실제 만족도가 달라집니다. ${firstKeyword} 조건이 괜찮아 보여도 집에 도착한 뒤 ${thirdObject} 감당할 수 있는지가 먼저입니다.`,
+      `온도 변화가 큰 날에는 장보기 순서부터 바꾸세요. 상온에 오래 두면 품질이 흔들리는 품목은 마지막에 사고, 보관성이 좋은 품목은 먼저 사는 편이 낫습니다. 이 작은 순서가 ${secondKeyword} 과정에서 생기는 실패 비용을 줄입니다.`,
+      `${itemObject} 품질 좋게 쓰려면 매장에서 보는 기준도 달라야 합니다. 표면 수분, 포장 안 습기, 냄새, 손상 부위, 밀봉 상태를 확인하고, 집에 도착한 뒤 품목에 맞게 냉장하거나 소분하세요. 할인은 관리가 따라올 때만 이득입니다.`,
       `${thirdSubject} 어려운 계절에는 대체 품목을 미리 정해야 합니다. 같은 메뉴를 고집하기보다 조리법을 바꾸면 식비와 품질을 동시에 지킬 수 있습니다. ${categoryTopic} 계절 리스크가 큰 만큼 메뉴 유연성이 중요합니다.`,
-      `결국 ${mainTopic} 날씨를 빼고 볼 수 없습니다. 오늘의 가격, 이동 시간, 보관 환경을 함께 적어두면 다음번 ${firstKeyword} 확인이 단순 정보 검색이 아니라 실제 장보기 전략이 됩니다.`,
+      `결국 ${mainTopic} 보관 환경을 빼고 볼 수 없습니다. 오늘의 가격, 이동 시간, 포장 상태를 함께 적어두면 다음번 ${firstKeyword} 확인이 단순 정보 검색이 아니라 실제 장보기 전략이 됩니다.`,
     ]);
   }
 
   if (pattern === 8) {
     return withBulkQualityNotes(seed, index, [
       `${mainTopic} 온라인 구매와 오프라인 구매의 기준이 다릅니다. ${itemSubject} 직접 보고 고를 때와 배송으로 받을 때 확인할 수 있는 정보가 다르기 때문입니다. ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 구매 채널별로 나눠야 실패가 줄어듭니다.`,
-      `온라인에서는 후기보다 수령 조건이 먼저입니다. 언제 도착하는지, 바로 냉장할 수 있는지, 포장 단위가 실제 소비량에 맞는지를 확인해야 합니다. ${itemObject} 받는 시간이 애매하면 할인보다 신선도 리스크가 커질 수 있습니다.`,
-      `오프라인에서는 상태를 볼 수 있다는 장점이 있습니다. 대신 충동구매가 쉽습니다. ${secondKeyword}를 지키려면 매장에 가기 전에 대체 품목과 예산 한도를 정해두세요. 현장에서 가격이 좋아도 보관 계획이 없으면 장바구니에 넣지 않는 기준이 필요합니다.`,
+      `온라인에서는 후기보다 수령 조건이 먼저입니다. 언제 도착하는지, 바로 냉장할 수 있는지, 포장 단위가 실제 소비량에 맞는지를 확인해야 합니다. ${itemObject} 받는 시간이 애매하면 할인보다 품질 리스크가 커질 수 있습니다.`,
+      `오프라인에서는 상태를 볼 수 있다는 장점이 있습니다. 대신 충동구매가 쉽습니다. ${secondObject} 지키려면 매장에 가기 전에 대체 품목과 예산 한도를 정해두세요. 현장에서 가격이 좋아도 보관 계획이 없으면 장바구니에 넣지 않는 기준이 필요합니다.`,
       `${thirdSubject} 핵심이라면 반품이나 교환 기준도 확인해야 합니다. 특히 ${categoryTopic} 포장 상태와 수령 시간이 품질에 영향을 줄 수 있으므로, 구매처 선택도 가격 비교의 일부입니다.`,
       `${mainObject} 찾는 목적이 절약이라면 구매 채널을 고정하지 않는 편이 좋습니다. 자주 쓰는 품목은 오프라인 상태 확인, 반복 구매 품목은 온라인 단위 비교처럼 나누면 ${firstKeyword} 변동에도 더 유연하게 대응할 수 있습니다.`,
     ]);
@@ -2964,14 +3002,15 @@ function withBulkQualityNotes(
 ) {
   const [firstKeyword, secondKeyword, thirdKeyword] = seed.expandedKeywords;
   const itemObject = withJosa(seed.item, "을", "를");
+  const itemWithAnd = withJosa(seed.item, "과", "와");
   const firstSubject = withJosa(firstKeyword, "이", "가");
   const secondObject = withJosa(secondKeyword, "을", "를");
   const thirdSubject = withJosa(thirdKeyword, "은", "는");
   const notes = [
     `${itemObject} 장바구니에 넣기 전에는 포장 단위와 실제 소비일을 같이 적어 두면 ${seed.mainKeyword} 판단이 훨씬 구체적입니다.`,
     `${firstSubject} 좋아 보여도 남은 재료를 처리할 메뉴가 없으면 절약 효과가 약해지므로, 구매 전 대체 메뉴를 하나 정해두세요.`,
-    `${secondObject} 낮추려면 ${seed.item}과 같은 역할을 하는 품목을 비교하되 맛, 식감, 손질 시간을 함께 봐야 만족도가 유지됩니다.`,
-    `${thirdSubject} 구매 직후 실행할수록 효과가 크기 때문에 집에 도착한 날 바로 손질하거나 소분하는 편이 안전합니다.`,
+    `${secondObject} 기준으로 비교할 때는 ${itemWithAnd} 같은 역할을 하는 품목을 함께 보되 맛, 식감, 손질 시간을 같이 봐야 만족도가 유지됩니다.`,
+    `${thirdSubject} 구매 직후 확인할수록 효과가 크기 때문에 집에 도착한 날 바로 상태를 보고 보관 위치를 정하는 편이 안전합니다.`,
     `${seed.category} 품목은 가격 변동보다 우리 집 소비 패턴이 더 큰 차이를 만들 때가 많으니, 이번 구매 결과를 다음 글이나 메모와 연결해 보세요.`,
   ];
 
@@ -3009,7 +3048,18 @@ function cleanGeneratedKoreanText(text: string) {
     .replaceAll("클릭률를", "클릭률을")
     .replaceAll("정보가가", "정보가")
     .replaceAll("예산가", "예산이")
-    .replaceAll("구조는도", "구조도");
+    .replaceAll("구조는도", "구조도")
+    .replaceAll("곁들임와", "곁들임과")
+    .replaceAll("선택가", "선택이")
+    .replaceAll("토핑를", "토핑을")
+    .replaceAll("손질를", "손질을")
+    .replaceAll("반찬가", "반찬이")
+    .replaceAll("양념가", "양념이")
+    .replaceAll("선택와", "선택과")
+    .replaceAll("이동를", "이동을")
+    .replaceAll("요약를", "요약을")
+    .replaceAll("아스파라거스과", "아스파라거스와")
+    .replaceAll("석류과", "석류와");
 }
 
 drafts.push(...buildBulkDrafts());
