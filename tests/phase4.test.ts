@@ -30,6 +30,18 @@ describe("phase 4 site and seo", () => {
     expect(entries[0]?.url).toBe("https://nongsusangogo.example");
   });
 
+  it("adds trust and navigation pages to sitemap", () => {
+    const urls = buildSitemapEntries("https://example.com").map(
+      (entry) => entry.url,
+    );
+
+    expect(urls).toContain("https://example.com/blog");
+    expect(urls).toContain("https://example.com/about");
+    expect(urls).toContain("https://example.com/contact");
+    expect(urls).toContain("https://example.com/privacy");
+    expect(urls).toContain("https://example.com/terms");
+  });
+
   it("adds only published editorial posts to sitemap", () => {
     const beforeFirst = buildSitemapEntries(
       "https://example.com",

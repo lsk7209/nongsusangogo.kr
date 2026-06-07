@@ -12,12 +12,25 @@ export function buildSitemapEntries(
   keywordPages = getQualityKeywordPages(),
   now = new Date(),
 ) {
+  const staticEntries = [
+    { path: "/blog", priority: 0.8 },
+    { path: "/about", priority: 0.5 },
+    { path: "/contact", priority: 0.5 },
+    { path: "/privacy", priority: 0.4 },
+    { path: "/terms", priority: 0.4 },
+  ];
+
   return [
     {
       url: baseUrl,
       changeFrequency: "daily" as const,
       priority: 1,
     },
+    ...staticEntries.map((entry) => ({
+      url: `${baseUrl}${entry.path}`,
+      changeFrequency: "monthly" as const,
+      priority: entry.priority,
+    })),
     ...pages.map((page: SitePage) => ({
       url: `${baseUrl}/items/${page.slug}`,
       changeFrequency: "daily" as const,
