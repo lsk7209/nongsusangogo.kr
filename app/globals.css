@@ -580,6 +580,36 @@ p {
   text-decoration: none;
 }
 
+.compact-link-list {
+  display: grid;
+  gap: 12px;
+}
+
+.compact-link-list a {
+  display: grid;
+  gap: 4px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  text-decoration: none;
+}
+
+.compact-link-list a:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.compact-link-list span {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.compact-link-list strong {
+  color: var(--fg);
+  font-size: 16px;
+  line-height: 1.45;
+}
+
 .card p,
 .panel p,
 .notice p {

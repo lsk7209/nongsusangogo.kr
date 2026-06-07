@@ -75,10 +75,17 @@ describe("public launch exposure policy", () => {
   it("allows fixture preview when explicitly enabled", async () => {
     vi.stubEnv("NODE_ENV", "production");
     vi.stubEnv("ALLOW_FIXTURE_PUBLIC", "true");
+    delete process.env.KAMIS_BASE_URL;
+    delete process.env.KAMIS_CERT_ID;
+    delete process.env.KAMIS_CERT_KEY;
 
     await expect(loadPublicPagesSafe()).resolves.not.toHaveLength(0);
     await expect(loadKeywordPagesSafe()).resolves.not.toHaveLength(0);
-    await expect(sitemap()).resolves.not.toHaveLength(0);
+    const sitemapEntries = await sitemap();
+    expect(sitemapEntries).not.toHaveLength(0);
+    expect(sitemapEntries.map((entry) => entry.url)).not.toContain(
+      "https://nongsusangogo.kr/items/baechu-price",
+    );
     await expect(robots()).resolves.toMatchObject({
       sitemap: "https://nongsusangogo.kr/sitemap.xml",
     });

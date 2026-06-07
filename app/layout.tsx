@@ -77,7 +77,8 @@ export default function RootLayout({
               <a href="/hubs/vegetable">채소</a>
               <a href="/hubs/fruit">과일</a>
               <a href="/blog">블로그</a>
-              <a href="/items/baechu-price">품목 상세</a>
+              <a href="/about">소개</a>
+              <a href="/contact">문의</a>
             </div>
           </nav>
           {children}
@@ -102,7 +103,7 @@ export default function RootLayout({
           <a href="/">홈</a>
           <a href="/hubs/vegetable">카테고리</a>
           <a href="/blog">블로그</a>
-          <a href="/items/baechu-price">품목</a>
+          <a href="/contact">문의</a>
         </nav>
       </body>
     </html>

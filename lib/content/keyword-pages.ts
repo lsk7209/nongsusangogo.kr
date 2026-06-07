@@ -33,7 +33,7 @@ export const keywordPages: KeywordPage[] = [
       "이 페이지는 가격 예측이나 구매 지시가 아니라, 관측값 기준의 타이밍 판단 근거를 정리합니다.",
     ],
     relatedLinks: [
-      { href: "/items/baechu-price", label: "배추 오늘 시세" },
+      { href: "/blog/radish-soup-seasonal-choice", label: "국거리 채소 선택" },
       { href: "/swap/baechu", label: "배추 대체재" },
     ],
     status: "quality_passed",
@@ -51,7 +51,7 @@ export const keywordPages: KeywordPage[] = [
       "대체재 추천은 가격과 용도 차이를 함께 보는 참고 정보이며 구매 지시가 아닙니다.",
     ],
     relatedLinks: [
-      { href: "/items/baechu-price", label: "배추 시세" },
+      { href: "/blog/soup-vegetable-cost", label: "국거리 채소 비용" },
       { href: "/compare/baechu-vs-apple", label: "품목 가격 비교 예시" },
     ],
     status: "quality_passed",
@@ -69,8 +69,8 @@ export const keywordPages: KeywordPage[] = [
       "단위가 다르면 원/kg 환산이 확인되기 전까지 직접 가격 비교로 단정하지 않습니다.",
     ],
     relatedLinks: [
-      { href: "/items/baechu-price", label: "배추 시세" },
-      { href: "/items/apple-price", label: "사과 시세" },
+      { href: "/blog/soup-vegetable-cost", label: "채소 비용 기준" },
+      { href: "/blog/salad-greens-price-map", label: "샐러드 채소 가격" },
     ],
     status: "quality_passed",
   },
@@ -88,7 +88,7 @@ export const keywordPages: KeywordPage[] = [
     ],
     relatedLinks: [
       { href: "/timing/baechu", label: "배추 구매 타이밍" },
-      { href: "/items/baechu-price", label: "배추 오늘 시세" },
+      { href: "/blog/root-vegetable-budget", label: "뿌리채소 예산" },
     ],
     status: "quality_passed",
   },
@@ -104,7 +104,7 @@ export const keywordPages: KeywordPage[] = [
       "평년가격은 단순한 전년도 가격과 다릅니다. 여러 해의 관측값을 기준으로 현재 가격 위치를 해석할 때 사용합니다.",
       "정확한 산식은 데이터 제공 방식 확인 후 각주로 고지해야 합니다.",
     ],
-    relatedLinks: [{ href: "/items/baechu-price", label: "배추 시세 예시" }],
+    relatedLinks: [{ href: "/blog/tomato-retail-wholesale-gap", label: "가격 비교 예시" }],
     status: "quality_passed",
   },
   {
@@ -137,4 +137,3 @@ export function getKeywordPage(intent: KeywordIntent, slug: string) {
 export function getKeywordPagesByIntent(intent: KeywordIntent) {
   return getQualityKeywordPages().filter((page) => page.intent === intent);
 }
-
