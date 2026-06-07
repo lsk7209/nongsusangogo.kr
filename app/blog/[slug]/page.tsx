@@ -655,6 +655,176 @@ function buildArticleComparisonRows(
         watch: "대량 구매보다 사용 빈도가 중요합니다.",
       },
     ],
+    "freezer-vegetable-strategy": [
+      {
+        option: "대파·양파 냉동",
+        bestFor: "국물, 볶음, 양념 베이스처럼 익혀 쓰는 메뉴",
+        watch: "생고명이나 샐러드 식감은 기대하기 어렵습니다.",
+      },
+      {
+        option: "데친 잎채소 냉동",
+        bestFor: "나물, 된장국, 볶음밥에 소량씩 넣을 때",
+        watch: "물기를 충분히 빼지 않으면 얼음 결정이 커집니다.",
+      },
+      {
+        option: "생식 채소 소량 구매",
+        bestFor: "오이, 상추처럼 아삭함이 핵심인 메뉴",
+        watch: "냉동보다 2~3일치만 사는 편이 품질 유지에 유리합니다.",
+      },
+    ],
+    "substitute-food-map": [
+      {
+        option: "향 대체재",
+        bestFor: "대파, 마늘, 깻잎처럼 향이 메뉴의 중심일 때",
+        watch: "완전 대체보다 소량 유지가 만족도를 지키기 쉽습니다.",
+      },
+      {
+        option: "부피 대체재",
+        bestFor: "국거리, 볶음, 샐러드에서 양을 채워야 할 때",
+        watch: "맛보다 식감과 조리 시간이 더 중요합니다.",
+      },
+      {
+        option: "보관성 대체재",
+        bestFor: "잎채소 가격이 높거나 날씨 리스크가 클 때",
+        watch: "메뉴 성격이 바뀌므로 CTA나 내부 링크로 다음 행동을 안내해야 합니다.",
+      },
+    ],
+    "weekly-market-note": [
+      {
+        option: "구매 날짜",
+        bestFor: "가격 흐름과 장보기 주기를 비교할 때",
+        watch: "날짜만 적으면 행동으로 이어지기 어렵습니다.",
+      },
+      {
+        option: "남긴 양",
+        bestFor: "다음 구매량을 줄일지 늘릴지 판단할 때",
+        watch: "정확한 무게보다 절반, 조금, 없음 같은 기록도 충분합니다.",
+      },
+      {
+        option: "대체재 결과",
+        bestFor: "다음번 같은 가격 상승에 빠르게 대응할 때",
+        watch: "가족 반응이나 조리 난이도까지 함께 적어야 오래갑니다.",
+      },
+    ],
+    "leafy-vegetable-risk": [
+      {
+        option: "상추",
+        bestFor: "쌈 메뉴에서 부드러운 생식 식감이 필요할 때",
+        watch: "외식 수요와 날씨에 따라 가격 체감이 크게 흔들립니다.",
+      },
+      {
+        option: "시금치",
+        bestFor: "데쳐서 나물, 국, 김밥 재료로 쓸 때",
+        watch: "데친 뒤 양이 줄어드는 손실을 계산해야 합니다.",
+      },
+      {
+        option: "깻잎",
+        bestFor: "소량으로 향을 강하게 보완할 때",
+        watch: "마름과 검은 반점이 생기기 쉬워 소포장이 안전합니다.",
+      },
+    ],
+    "bulk-buying-failure": [
+      {
+        option: "묶음 할인",
+        bestFor: "이번 주 메뉴가 두 번 이상 확정됐을 때",
+        watch: "남는 양이 생기면 할인률보다 폐기 손실이 큽니다.",
+      },
+      {
+        option: "박스 구매",
+        bestFor: "가족 단위 반복 소비와 보관 공간이 충분할 때",
+        watch: "습기, 상처, 숙도 차이를 구매 직후 분리해야 합니다.",
+      },
+      {
+        option: "소포장 전환",
+        bestFor: "식단이 불확실하거나 1~2인 가구일 때",
+        watch: "단가가 높아 보여도 실패 비용을 줄일 수 있습니다.",
+      },
+    ],
+    "rainy-day-shopping-list": [
+      {
+        option: "잎채소 줄이기",
+        bestFor: "비 오는 주에 생식 메뉴가 많지 않을 때",
+        watch: "물기 제거와 빠른 소비 계획이 없으면 손실이 커집니다.",
+      },
+      {
+        option: "뿌리채소 보완",
+        bestFor: "국거리와 볶음 부피를 안정적으로 채울 때",
+        watch: "무겁고 오래가지만 메뉴가 단조로워질 수 있습니다.",
+      },
+      {
+        option: "버섯·콩나물 활용",
+        bestFor: "짧은 조리 시간으로 국물과 볶음을 보완할 때",
+        watch: "보관 기간이 길지 않으므로 사용일을 정해야 합니다.",
+      },
+    ],
+    "heatwave-produce-risk": [
+      {
+        option: "생식 채소 소량",
+        bestFor: "오늘 바로 먹을 샐러드나 쌈 메뉴",
+        watch: "이동 시간이 길면 냉장 전환이 늦어져 품질이 떨어집니다.",
+      },
+      {
+        option: "냉동·손질 채소",
+        bestFor: "폭염기에 손실을 줄이고 조리 시간을 줄일 때",
+        watch: "생식 식감이 필요한 메뉴에는 맞지 않습니다.",
+      },
+      {
+        option: "보관성 좋은 재료",
+        bestFor: "며칠치 식단을 안정적으로 짤 때",
+        watch: "가격만 낮다고 많이 사면 메뉴 피로도가 생길 수 있습니다.",
+      },
+    ],
+    "cold-wave-vegetable-price": [
+      {
+        option: "무·대파 소량 확보",
+        bestFor: "한파 뒤 국거리 메뉴를 유지하고 싶을 때",
+        watch: "대량 구매보다 반복 메뉴 수가 먼저입니다.",
+      },
+      {
+        option: "버섯·콩나물 대체",
+        bestFor: "국물 부피와 식감을 저렴하게 보완할 때",
+        watch: "무의 단맛이나 대파 향은 줄어들 수 있습니다.",
+      },
+      {
+        option: "냉동 채소 활용",
+        bestFor: "출하 지연 구간에 기본 재료를 유지할 때",
+        watch: "해동 후 식감이 필요한 메뉴에는 피하는 편이 좋습니다.",
+      },
+    ],
+    "rice-10kg-price-family-budget": [
+      {
+        option: "쌀 10kg",
+        bestFor: "밥을 자주 해 먹는 3~4인 가구",
+        watch: "보관 공간과 밀폐 용기가 없으면 품질 손실이 생깁니다.",
+      },
+      {
+        option: "쌀 5kg 이하",
+        bestFor: "1~2인 가구나 외식이 잦은 집",
+        watch: "단가는 높아도 신선도와 보관 안정성이 좋을 수 있습니다.",
+      },
+      {
+        option: "잡곡 혼합",
+        bestFor: "식단 변화를 주면서 포만감을 높이고 싶을 때",
+        watch: "가족이 실제로 먹는 비율부터 작게 시험해야 합니다.",
+      },
+    ],
+    "brown-rice-mix-cost-health-meal": [
+      {
+        option: "현미 10~20%",
+        bestFor: "처음 현미를 섞는 집이나 아이 식단",
+        watch: "식감 적응이 안 되면 밥을 남길 수 있습니다.",
+      },
+      {
+        option: "현미 30% 이상",
+        bestFor: "불림 시간과 씹는 식감에 익숙한 집",
+        watch: "조리 시간이 늘고 외식으로 빠질 가능성을 봐야 합니다.",
+      },
+      {
+        option: "백미 중심 유지",
+        bestFor: "가족 반응이 아직 불확실할 때",
+        watch: "건강식 이미지만 보고 대량 구매하면 실패할 수 있습니다.",
+      },
+    ],
   };
 
   return (
@@ -681,6 +851,44 @@ function buildArticleComparisonRows(
 function getArticleHeroImage(
   post: NonNullable<ReturnType<typeof getEditorialPost>>,
 ) {
+  if (post.slug.includes("freezer") || post.slug.includes("meal-prep")) {
+    return {
+      src: "/images/nongsusan-freezer-hero.jpg",
+      alt: `${post.category} 냉동 보관 장보기 이미지`,
+    };
+  }
+
+  if (
+    post.slug.includes("leafy") ||
+    post.slug.includes("lettuce") ||
+    post.slug.includes("salad") ||
+    post.slug.includes("rainy-day") ||
+    post.slug.includes("heatwave")
+  ) {
+    return {
+      src: "/images/nongsusan-leafy-hero.jpg",
+      alt: `${post.category} 잎채소 장보기 이미지`,
+    };
+  }
+
+  if (
+    post.slug.includes("root") ||
+    post.slug.includes("potato") ||
+    post.slug.includes("radish") ||
+    post.slug.includes("onion") ||
+    post.slug.includes("garlic") ||
+    post.slug.includes("rice") ||
+    post.slug.includes("grain") ||
+    post.slug.includes("storage") ||
+    post.slug.includes("bulk-buying") ||
+    post.slug.includes("cold-wave")
+  ) {
+    return {
+      src: "/images/nongsusan-root-storage-hero.jpg",
+      alt: `${post.category} 저장 채소 장보기 이미지`,
+    };
+  }
+
   if (post.category.includes("수산")) {
     return {
       src: "/images/nongsusan-seafood-hero.jpg",

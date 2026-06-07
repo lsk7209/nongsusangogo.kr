@@ -3068,18 +3068,19 @@ function cleanGeneratedKoreanText(text: string) {
 drafts.push(...buildBulkDrafts());
 
 export const editorialPosts: EditorialPost[] = drafts.map((draft, index) => {
+  const enhancedDraft = applyUpcomingEditorialEnhancements(draft, index);
   const publishAt = getEditorialPublishAt(index);
-  const priorityExperience = buildPriorityExperienceParagraph(draft, index);
-  const priorityDeepDive = buildPriorityDeepDive(draft, index);
+  const priorityExperience = buildPriorityExperienceParagraph(enhancedDraft, index);
+  const priorityDeepDive = buildPriorityDeepDive(enhancedDraft, index);
   const publishReadyDraft = {
-    ...draft,
+    ...enhancedDraft,
     body: [
-      ...draft.body,
+      ...enhancedDraft.body,
       ...(priorityExperience ? [priorityExperience] : []),
-      buildCleanPracticalClosing(draft, index),
+      buildCleanPracticalClosing(enhancedDraft, index),
     ].map(cleanGeneratedKoreanText),
     deepDives: [
-      ...buildCleanDeepDives(draft, index),
+      ...buildCleanDeepDives(enhancedDraft, index),
       ...(priorityDeepDive ? [priorityDeepDive] : []),
     ].map((section) => ({
       heading: cleanGeneratedKoreanText(section.heading),
@@ -3099,6 +3100,193 @@ export const editorialPosts: EditorialPost[] = drafts.map((draft, index) => {
     codexOnly: true,
   };
 });
+
+function applyUpcomingEditorialEnhancements(draft: PostDraft, index: number): PostDraft {
+  if (index < 13 || index > 22) {
+    return draft;
+  }
+
+  const overrides: Record<
+    string,
+    {
+      lead: string;
+      faq: Array<{ question: string; answer: string }>;
+    }
+  > = {
+    "freezer-vegetable-strategy": {
+      lead:
+        "채소 냉동 보관은 남은 채소를 얼리는 단순한 절약법이 아닙니다. 애호박, 대파, 양파처럼 익혀 쓰는 채소와 상추, 오이처럼 생식 식감이 중요한 채소는 냉동 후 결과가 완전히 다릅니다. 검색자가 실제로 궁금해하는 지점은 '얼려도 되는가'보다 '얼린 뒤 어떤 메뉴에 써야 실패하지 않는가'입니다. 그래서 이 글은 식재료 손실, 냉동 채소, 해동 후 식감을 메뉴별로 나눠 판단합니다.",
+      faq: [
+        {
+          question: "어떤 채소는 냉동하면 맛이 크게 떨어지나요?",
+          answer:
+            "생으로 먹는 식감이 중요한 오이, 상추, 일부 샐러드 잎채소는 냉동 후 물러지기 쉽습니다. 반면 대파, 양파, 데친 시금치, 볶음용 채소는 익혀 쓰는 메뉴라면 냉동 활용도가 높습니다.",
+        },
+        {
+          question: "냉동 채소는 해동해서 써야 하나요?",
+          answer:
+            "볶음, 국물, 찌개처럼 가열하는 메뉴는 얼린 상태로 바로 넣는 편이 식감 손실이 적습니다. 샐러드처럼 생식 메뉴에 쓰려면 냉동보다 소량 구매가 안전합니다.",
+        },
+      ],
+    },
+    "substitute-food-map": {
+      lead:
+        "식재료 대체재를 고를 때 가장 흔한 실패는 이름이 비슷한 재료를 찾는 것입니다. 실제로는 맛보다 역할이 먼저입니다. 국물의 시원함, 볶음의 부피, 샐러드의 아삭함, 양념의 향처럼 메뉴 안에서 맡는 기능을 나누면 장바구니 비용을 줄이면서도 식탁 만족도를 지킬 수 있습니다.",
+      faq: [
+        {
+          question: "식재료 대체재는 맛이 비슷한 재료를 고르면 되나요?",
+          answer:
+            "맛보다 역할을 먼저 봐야 합니다. 예를 들어 대파는 향, 무는 국물의 시원함, 양배추는 부피와 보관성을 맡기 때문에 같은 메뉴에서도 대체 기준이 달라집니다.",
+        },
+        {
+          question: "대체재를 많이 사두면 식비가 줄어드나요?",
+          answer:
+            "대체재가 많아지면 오히려 남는 재료가 늘 수 있습니다. 한 메뉴에 필요한 대체재를 하나만 정하고, 다음 장보기에서 만족도를 기록하는 방식이 더 안전합니다.",
+        },
+      ],
+    },
+    "weekly-market-note": {
+      lead:
+        "농산물 가격 기록은 복잡한 가계부가 아니라 다음 장보기의 기준점을 만드는 메모입니다. 같은 가격이라도 지난주보다 오른 것인지, 우리 집에서 남긴 양이 많았는지, 대체재가 통했는지에 따라 판단이 달라집니다. 주간 장보기 메모는 체감 물가를 낮추는 도구이자 검색자가 실제 행동으로 옮기기 쉬운 콘텐츠 요소입니다.",
+      faq: [
+        {
+          question: "농산물 가격 기록은 어떤 항목만 적으면 되나요?",
+          answer:
+            "구매 날짜, 품목, 포장 단위, 남긴 양, 다음에 줄일지 늘릴지만 적어도 충분합니다. 너무 자세한 가계부보다 반복 가능한 짧은 메모가 오래갑니다.",
+        },
+        {
+          question: "가격 기록이 실제 식비 절약에 도움이 되나요?",
+          answer:
+            "한두 번으로는 효과가 작지만 같은 품목의 실패 패턴이 보이면 구매량을 줄이기 쉬워집니다. 특히 상추, 오이, 대파처럼 자주 사는 품목에서 효과가 큽니다.",
+        },
+      ],
+    },
+    "leafy-vegetable-risk": {
+      lead:
+        "잎채소 가격 변동은 상추, 시금치, 깻잎을 한 묶음으로 보면 놓치는 부분이 많습니다. 상추는 외식 수요와 쌈 메뉴, 시금치는 데친 뒤 양과 보관, 깻잎은 향과 소량 소비가 핵심입니다. 날씨 리스크가 생길 때는 가격보다 어떤 잎채소가 어떤 메뉴에서 실패하기 쉬운지를 먼저 봐야 합니다.",
+      faq: [
+        {
+          question: "잎채소는 비 오는 주에 얼마나 사는 게 적당한가요?",
+          answer:
+            "생으로 먹는 상추와 깻잎은 2~3일치 정도로 줄이고, 데쳐서 쓸 시금치나 얼갈이는 조리 계획이 있을 때만 사는 편이 안전합니다.",
+        },
+        {
+          question: "상추가 비싸면 어떤 채소로 대체할 수 있나요?",
+          answer:
+            "쌈 목적이면 깻잎, 양배추 쌈, 데친 배추가 대체가 될 수 있습니다. 샐러드 목적이면 오이, 토마토, 양상추를 섞어 식감을 나누는 편이 좋습니다.",
+        },
+      ],
+    },
+    "bulk-buying-failure": {
+      lead:
+        "농산물 대량 구매 실패는 가격을 잘못 봐서가 아니라 남기는 양을 과소평가해서 생깁니다. 묶음 할인, 박스 구매, 대용량 손질품은 한 번에 싸 보이지만 보관 공간과 조리 일정이 따라오지 않으면 실제 식비가 늘어납니다. 이 글은 대량 구매를 해야 하는 경우와 멈춰야 하는 경우를 실패 비용 기준으로 나눕니다.",
+      faq: [
+        {
+          question: "대량 구매가 이득인지 바로 판단하는 기준은 뭔가요?",
+          answer:
+            "이번 주 안에 두 번 이상 쓸 메뉴가 있고 보관 위치가 정해졌다면 이득일 가능성이 있습니다. 둘 중 하나라도 비어 있으면 소포장이 더 안전합니다.",
+        },
+        {
+          question: "묶음 할인이 보이면 무조건 사도 되나요?",
+          answer:
+            "아닙니다. 할인 폭보다 남길 가능성을 먼저 봐야 합니다. 특히 수분 많은 채소와 과일은 폐기 손실이 생기면 단가가 빠르게 올라갑니다.",
+        },
+      ],
+    },
+    "rainy-day-shopping-list": {
+      lead:
+        "비 오는 주 장보기는 우산을 챙기는 문제가 아니라 품목 순서를 바꾸는 문제입니다. 잎채소는 물기와 보관 리스크가 커지고, 무거운 뿌리채소나 보관성 좋은 재료는 상대적으로 안정적입니다. 장마철 채소 구매 목록은 '무엇을 살까'보다 '무엇을 줄이고 무엇으로 보완할까'에 초점을 맞춰야 합니다.",
+      faq: [
+        {
+          question: "장마철에는 잎채소를 아예 피해야 하나요?",
+          answer:
+            "아예 피할 필요는 없지만 양을 줄이는 편이 안전합니다. 바로 먹을 쌈채소만 사고, 부피는 양배추, 무, 버섯 같은 보관성 있는 재료로 보완할 수 있습니다.",
+        },
+        {
+          question: "비 오는 날 장보기 순서는 어떻게 잡는 게 좋나요?",
+          answer:
+            "상온 노출에 약한 잎채소와 수산물은 마지막에 사고, 무겁고 보관성이 좋은 품목은 먼저 담는 편이 좋습니다. 집에 도착하면 물기 제거를 먼저 해야 합니다.",
+        },
+      ],
+    },
+    "heatwave-produce-risk": {
+      lead:
+        "폭염 농산물 가격은 숫자보다 신선도 리스크가 먼저 체감됩니다. 여름 채소는 매장 진열 시간, 집까지 이동 시간, 냉장 전환 속도에 따라 만족도가 크게 달라집니다. 할인 상품이라도 집에 도착한 뒤 바로 처리하지 못하면 실제 비용은 올라가므로, 폭염기 장보기는 이동 동선과 보관 시간을 함께 계산해야 합니다.",
+      faq: [
+        {
+          question: "폭염에는 어떤 농산물을 먼저 줄여야 하나요?",
+          answer:
+            "생식 잎채소, 무르기 쉬운 과채류, 이미 표면 수분이 많은 상품을 먼저 줄이는 편이 안전합니다. 바로 조리할 품목은 필요한 만큼만 사면 됩니다.",
+        },
+        {
+          question: "여름 채소 보관은 집에 오자마자 무엇부터 해야 하나요?",
+          answer:
+            "포장을 열어 열기와 물기를 확인하고, 바로 먹을 것과 며칠 둘 것을 나눠야 합니다. 물기가 많은 품목은 키친타월이나 밀폐 용기로 보관 방식을 조정하세요.",
+        },
+      ],
+    },
+    "cold-wave-vegetable-price": {
+      lead:
+        "한파 채소 가격은 오늘 바로 오르기보다 출하 지연과 매장 재고를 거치며 며칠 뒤 체감되는 경우가 많습니다. 배추, 무, 대파처럼 겨울 식단에 자주 들어가는 품목은 가격이 오른 뒤 대체재를 찾으면 늦을 수 있습니다. 한파 예보가 있을 때는 냉장고 재고와 다음 국거리 메뉴를 먼저 맞춰야 합니다.",
+      faq: [
+        {
+          question: "한파 예보가 있으면 채소를 미리 사야 하나요?",
+          answer:
+            "반복해서 쓰는 무, 대파, 양파는 소량 미리 준비할 수 있습니다. 다만 보관 공간이 부족하면 대량 구매보다 대체 메뉴를 먼저 정하는 편이 안전합니다.",
+        },
+        {
+          question: "한파 때 국거리 채소는 무엇으로 대체할 수 있나요?",
+          answer:
+            "무가 비싸면 콩나물, 버섯, 배추를 섞어 국물 부피를 보완할 수 있습니다. 대파가 비싸면 향은 소량만 유지하고 양파로 단맛을 보태는 방식이 좋습니다.",
+        },
+      ],
+    },
+    "rice-10kg-price-family-budget": {
+      lead:
+        "쌀 10kg 가격은 한 번 사면 오래 먹는 품목이라 단가보다 소비 속도가 중요합니다. 가족 식비 예산에서는 대용량이 유리할 수 있지만, 보관 공간이 습하거나 먹는 속도가 느리면 쌀 보관법이 실제 비용을 좌우합니다. 이 글은 kg 단가, 가족 수, 보관 환경을 함께 놓고 판단합니다.",
+      faq: [
+        {
+          question: "쌀 10kg은 몇 인 가구에 적당한가요?",
+          answer:
+            "밥을 자주 해 먹는 3~4인 가구라면 안정적일 수 있습니다. 1~2인 가구나 외식이 잦은 집은 5kg 이하가 보관 손실을 줄이는 데 유리할 수 있습니다.",
+        },
+        {
+          question: "쌀을 싸게 샀는데도 손해가 되는 경우가 있나요?",
+          answer:
+            "습기, 벌레, 냄새 배임으로 품질이 떨어지면 손해가 됩니다. 대용량 구매 전에는 밀폐 용기와 보관 위치를 먼저 정해야 합니다.",
+        },
+      ],
+    },
+    "brown-rice-mix-cost-health-meal": {
+      lead:
+        "현미 혼합비는 건강식 이미지만 보고 정하면 오래 유지하기 어렵습니다. 백미 대체 구매는 가격보다 가족이 실제로 먹는 비율, 불림 시간, 식감 적응이 더 중요합니다. 현미를 많이 넣어도 남기거나 외식이 늘면 절약이 아니므로, 처음에는 혼합비를 작게 시작하는 편이 안전합니다.",
+      faq: [
+        {
+          question: "현미는 처음부터 많이 섞는 게 좋나요?",
+          answer:
+            "처음에는 낮은 비율로 시작하는 편이 좋습니다. 식감 적응이 안 되면 밥을 남기거나 외식이 늘 수 있어 실제 식비 절약과 멀어집니다.",
+        },
+        {
+          question: "현미와 백미를 같이 보관해도 되나요?",
+          answer:
+            "가능하지만 소비 속도가 다르면 따로 밀폐 보관하는 편이 좋습니다. 현미는 불림 시간과 보관 기간을 함께 고려해야 합니다.",
+        },
+      ],
+    },
+  };
+
+  const override = overrides[draft.slug];
+
+  if (!override) {
+    return draft;
+  }
+
+  return {
+    ...draft,
+    body: [override.lead, ...draft.body.slice(1)],
+    faq: override.faq,
+  };
+}
 
 function buildPriorityExperienceParagraph(post: PostDraft, index: number) {
   if (index > 20) {
