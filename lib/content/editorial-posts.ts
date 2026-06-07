@@ -2527,6 +2527,30 @@ const formatProfiles = [
     elements: ["데이터해석", "장보기메모", "대체품목", "재고점검", "FAQ", "CTA"],
     focus: "공식 시세를 그대로 옮기지 않고 장보기 행동으로 번역합니다.",
   },
+  {
+    elements: ["실사용예시", "비용변수", "보관판단", "대체선택", "주의점", "CTA"],
+    focus: "실제 사용 장면을 먼저 놓고 비용 변수를 좁혀 갑니다.",
+  },
+  {
+    elements: ["선택매트릭스", "가구별기준", "손질시간", "실중량", "FAQ", "출처"],
+    focus: "가구 규모와 손질 시간을 함께 계산해 결론을 나눕니다.",
+  },
+  {
+    elements: ["제철맥락", "구매타이밍", "저장전환", "활용메뉴", "내부링크", "CTA"],
+    focus: "제철 수요와 저장 가능성을 함께 보고 구매 시점을 정합니다.",
+  },
+  {
+    elements: ["안전체크", "원산지확인", "보관온도", "수령즉시점검", "FAQ", "출처"],
+    focus: "가격보다 안전과 확인 가능한 기준을 먼저 제시합니다.",
+  },
+  {
+    elements: ["검색의도", "답변요약", "구조화문단", "근거연결", "내부링크", "CTA"],
+    focus: "검색 의도에 바로 답하고 근거와 다음 행동을 연결합니다.",
+  },
+  {
+    elements: ["비교기준", "실패조건", "대체흐름", "메모법", "색상강조", "CTA"],
+    focus: "비교 기준과 실패 조건을 같이 보여 반복 실수를 줄입니다.",
+  },
 ] as const;
 
 const relatedBlogSlugs = [
@@ -2750,6 +2774,10 @@ function buildBulkBody(
   index: number,
   profileFocus: string,
 ) {
+  if (seed.category === "콘텐츠") {
+    return buildSeoContentBody(seed, index, profileFocus);
+  }
+
   const [firstKeyword, secondKeyword, thirdKeyword] = seed.expandedKeywords;
   const itemSubject = withJosa(seed.item, "은", "는");
   const itemObject = withJosa(seed.item, "을", "를");
@@ -2859,17 +2887,91 @@ function buildBulkBody(
   ]);
 }
 
+function buildSeoContentBody(
+  seed: BulkDraftSeed,
+  index: number,
+  profileFocus: string,
+) {
+  const [firstKeyword, secondKeyword, thirdKeyword] = seed.expandedKeywords;
+  const mainTopic = withJosa(seed.mainKeyword, "은", "는");
+  const mainObject = withJosa(seed.mainKeyword, "을", "를");
+  const firstSubject = withJosa(firstKeyword, "이", "가");
+  const secondObject = withJosa(secondKeyword, "을", "를");
+  const thirdObject = withJosa(thirdKeyword, "을", "를");
+  const pattern = index % 4;
+
+  const variants = [
+    [
+      `${mainTopic} 단순히 키워드를 많이 넣는 작업이 아닙니다. 검색자가 어떤 결정을 하려는지 먼저 파악하고, ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}를 각각 다른 역할로 배치해야 합니다. ${profileFocus}`,
+      `첫 문단은 바로 답을 줘야 합니다. ${firstSubject} 중요해 보이더라도 설명을 길게 끌기보다, 독자가 지금 확인해야 할 기준을 먼저 말하고 예외 조건을 뒤에 붙이는 편이 좋습니다. 이렇게 하면 사람도 읽기 쉽고 AI 답변에도 인용되기 쉽습니다.`,
+      `${secondObject} 높이려면 표나 리스트만으로 끝내지 말고 실제 장보기 상황을 연결해야 합니다. 예를 들어 가격 비교, 보관 손실, 원산지 확인, 대체 품목 같은 판단 축을 하나의 흐름으로 묶으면 체류 가치가 높아집니다.`,
+      `${thirdObject} 다룰 때는 출처와 내부 링크가 중요합니다. 공식 자료를 참고하되 숫자를 그대로 복사하지 않고 생활 언어로 번역해야 하며, 관련 글로 이어지는 링크는 반드시 공개된 글을 가리켜야 합니다.`,
+      `정리하면 ${mainObject} 만들 때는 제목, 요약, 본문, FAQ, CTA가 같은 의도를 바라봐야 합니다. 키워드는 앞쪽에 두되 반복하지 않고, 독자가 다음 행동을 바로 고를 수 있게 문단을 구성하는 것이 핵심입니다.`,
+    ],
+    [
+      `${mainTopic} 검색 결과에서 클릭을 만들려면 제목보다 본문 구조가 더 중요할 때가 많습니다. ${firstKeyword}가 제목에 들어가도 본문에서 ${secondKeyword}와 ${thirdKeyword}를 제대로 풀지 못하면 얇은 글처럼 보입니다.`,
+      `좋은 구조는 질문, 짧은 답, 판단 기준, 예시, 다음 행동 순서로 이어집니다. 이 순서를 지키면 독자는 필요한 정보를 빠르게 얻고, 검색엔진은 글의 주제를 더 분명하게 이해합니다.`,
+      `${secondObject} 설명할 때는 추상적인 SEO 용어보다 실제 문장 예시가 필요합니다. 어떤 표현이 클릭을 높이는지, 어떤 내부 링크가 자연스러운지, 어떤 경우에 예약글 링크를 피해야 하는지까지 보여줘야 합니다.`,
+      `${thirdObject} 넣는 문단은 과장 없이 작성해야 합니다. AI 인용이나 상위노출을 단정하지 말고, 구조화된 답변과 검증 가능한 출처가 인용 가능성을 높인다는 수준으로 설명하는 편이 안전합니다.`,
+      `${mainObject} 운영 기준으로 삼으려면 발행 전 체크리스트가 필요합니다. 제목 중복, 메타 설명, 내부 링크 상태, FAQ 품질, 공개 시점까지 확인하면 콘텐츠 품질과 기술 SEO가 함께 안정됩니다.`,
+    ],
+    [
+      `${mainTopic} 사이트 전체의 주제 신뢰도를 쌓는 작업입니다. 개별 글 하나가 튀기보다, ${firstKeyword}, ${secondKeyword}, ${thirdKeyword}가 서로 연결되어 같은 독자 문제를 해결해야 합니다.`,
+      `검색 의도는 정보 탐색, 비교, 구매 판단, 보관 문제처럼 나눌 수 있습니다. 같은 농수산물 주제라도 의도가 다르면 제목의 각도와 본문 순서가 달라져야 하므로, 글을 만들기 전에 의도부터 고정해야 합니다.`,
+      `${secondObject} 다룰 때는 중복을 피하는 것이 중요합니다. 같은 단어를 반복하기보다 원인, 기준, 예외, 실행 방법을 나눠 쓰면 제목도 다양해지고 본문도 템플릿처럼 보이지 않습니다.`,
+      `${thirdObject} 강화하려면 FAQ를 단순 반복 질문으로 채우지 말아야 합니다. 본문에서 다루지 못한 예외 조건이나 독자가 바로 헷갈릴 지점을 답변으로 보완해야 합니다.`,
+      `결론적으로 ${mainTopic} 한 편의 글쓰기 기술이 아니라 사이트 운영 규칙입니다. 공개된 글끼리 내부 링크를 연결하고, 예약글은 공개 전 노출하지 않는 방식까지 포함해야 신뢰도가 유지됩니다.`,
+    ],
+    [
+      `${mainTopic} 빠른 생산보다 일관된 품질 관리가 우선입니다. ${firstKeyword}를 앞세우더라도 실제 본문이 독자의 문제를 해결하지 못하면 검색 유입이 오래가지 않습니다.`,
+      `본문에는 독자가 바로 확인할 수 있는 기준이 있어야 합니다. ${secondKeyword}를 설명할 때는 체크리스트, 비교 기준, 실패 조건, 다음 행동을 함께 제시해야 글의 체감 가치가 올라갑니다.`,
+      `${thirdObject} 최적화하려면 문단 하나마다 역할을 분명히 해야 합니다. 첫 문단은 답변, 중간 문단은 근거, 후반 문단은 실행, 마지막 문단은 CTA로 나누면 템플릿처럼 보여도 실제 정보 구조는 선명해집니다.`,
+      `색상 강조도 과하면 방해가 됩니다. 글마다 1~2개의 보조 색상만 사용하고, 표나 체크리스트처럼 독자가 스캔해야 하는 영역에만 제한적으로 쓰는 것이 좋습니다.`,
+      `${mainObject} 발행하기 전에는 제목 중복, 부제 키워드, 메타 설명, 내부 링크, 공개 스케줄을 함께 점검해야 합니다. 이 과정이 있어야 많은 글을 추가해도 사이트 품질이 흔들리지 않습니다.`,
+    ],
+  ];
+
+  return withSeoContentQualityNotes(seed, index, variants[pattern]!);
+}
+
+function withSeoContentQualityNotes(
+  seed: BulkDraftSeed,
+  index: number,
+  paragraphs: string[],
+) {
+  const [firstKeyword, secondKeyword, thirdKeyword] = seed.expandedKeywords;
+  const firstObject = withJosa(firstKeyword, "을", "를");
+  const secondObject = withJosa(secondKeyword, "을", "를");
+  const thirdObject = withJosa(thirdKeyword, "을", "를");
+  const notes = [
+    `${seed.mainKeyword}에서 ${firstObject} 앞세울 때도 독자가 얻는 결론을 먼저 보여줘야 클릭 이후 이탈을 줄일 수 있습니다.`,
+    `${seed.mainKeyword}에서 ${secondObject} 설명하는 문단에는 실제 예시와 실패 조건을 함께 넣어야 템플릿처럼 보이지 않습니다.`,
+    `${seed.mainKeyword}에서 ${thirdObject} 다룰 때는 제목, 부제, 본문, FAQ가 같은 의도를 향하도록 정렬하는 것이 중요합니다.`,
+    `${seed.mainKeyword} 글은 내부 링크가 공개된 글로 이어지는지까지 확인해야 사이트 신뢰를 지킬 수 있습니다.`,
+    `${seed.mainKeyword} 발행 전에는 메타 설명, CTA, 구조화된 질문, 색상 강조 위치를 함께 점검하는 편이 안전합니다.`,
+  ];
+
+  return paragraphs.map(
+    (paragraph, paragraphIndex) =>
+      `${paragraph} ${notes[(index + paragraphIndex) % notes.length]!}`,
+  );
+}
+
 function withBulkQualityNotes(
   seed: BulkDraftSeed,
   index: number,
   paragraphs: string[],
 ) {
   const [firstKeyword, secondKeyword, thirdKeyword] = seed.expandedKeywords;
+  const itemObject = withJosa(seed.item, "을", "를");
+  const firstSubject = withJosa(firstKeyword, "이", "가");
+  const secondObject = withJosa(secondKeyword, "을", "를");
+  const thirdSubject = withJosa(thirdKeyword, "은", "는");
   const notes = [
-    `${seed.item}을 장바구니에 넣기 전에는 포장 단위와 실제 소비일을 같이 적어 두면 ${seed.mainKeyword} 판단이 훨씬 구체적입니다.`,
-    `${firstKeyword}가 좋아 보여도 남은 재료를 처리할 메뉴가 없으면 절약 효과가 약해지므로, 구매 전 대체 메뉴를 하나 정해두세요.`,
-    `${secondKeyword}를 낮추려면 ${seed.item}과 같은 역할을 하는 품목을 비교하되 맛, 식감, 손질 시간을 함께 봐야 만족도가 유지됩니다.`,
-    `${thirdKeyword}는 구매 직후 실행할수록 효과가 크기 때문에 집에 도착한 날 바로 손질하거나 소분하는 편이 안전합니다.`,
+    `${itemObject} 장바구니에 넣기 전에는 포장 단위와 실제 소비일을 같이 적어 두면 ${seed.mainKeyword} 판단이 훨씬 구체적입니다.`,
+    `${firstSubject} 좋아 보여도 남은 재료를 처리할 메뉴가 없으면 절약 효과가 약해지므로, 구매 전 대체 메뉴를 하나 정해두세요.`,
+    `${secondObject} 낮추려면 ${seed.item}과 같은 역할을 하는 품목을 비교하되 맛, 식감, 손질 시간을 함께 봐야 만족도가 유지됩니다.`,
+    `${thirdSubject} 구매 직후 실행할수록 효과가 크기 때문에 집에 도착한 날 바로 손질하거나 소분하는 편이 안전합니다.`,
     `${seed.category} 품목은 가격 변동보다 우리 집 소비 패턴이 더 큰 차이를 만들 때가 많으니, 이번 구매 결과를 다음 글이나 메모와 연결해 보세요.`,
   ];
 
@@ -2904,6 +3006,7 @@ function cleanGeneratedKoreanText(text: string) {
     .replaceAll("루틴와", "루틴과")
     .replaceAll("손실가", "손실이")
     .replaceAll("가격가", "가격이")
+    .replaceAll("클릭률를", "클릭률을")
     .replaceAll("정보가가", "정보가")
     .replaceAll("예산가", "예산이")
     .replaceAll("구조는도", "구조도");
