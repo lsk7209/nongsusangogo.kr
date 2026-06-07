@@ -1,16 +1,10 @@
 import Script from "next/script";
 import { readEnv } from "@/lib/config/env";
 
-const defaultAdsenseClientId = "ca-pub-3050601904412736";
-
 export function AnalyticsScripts() {
   const env = readEnv();
   const ga4MeasurementId =
     env.NEXT_PUBLIC_GA4_MEASUREMENT_ID ?? env.GA4_MEASUREMENT_ID;
-  const adsenseClientId =
-    env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID ??
-    env.GOOGLE_ADSENSE_CLIENT_ID ??
-    defaultAdsenseClientId;
 
   return (
     <>
@@ -29,14 +23,6 @@ export function AnalyticsScripts() {
             `}
           </Script>
         </>
-      ) : null}
-      {adsenseClientId ? (
-        <Script
-          async
-          crossOrigin="anonymous"
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-          strategy="afterInteractive"
-        />
       ) : null}
     </>
   );

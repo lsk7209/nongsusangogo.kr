@@ -4,6 +4,15 @@ import { readEnv } from "@/lib/config/env";
 import "./globals.css";
 
 const env = readEnv();
+const googleSiteVerification =
+  env.GOOGLE_SITE_VERIFICATION ??
+  "NMjcqkG5xC8wts9aniDfqyrzvET4JIFFknFZvQIbIpM";
+const naverSiteVerification =
+  env.NAVER_SITE_VERIFICATION ?? "06c0f17cbec9a0356acac84e2d1b57e8656f8bd6";
+const adsenseClientId =
+  env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID ??
+  env.GOOGLE_ADSENSE_CLIENT_ID ??
+  "ca-pub-3050601904412736";
 
 export const metadata: Metadata = {
   title: {
@@ -13,11 +22,9 @@ export const metadata: Metadata = {
   description:
     "농산물 시세, 장보기 타이밍, 보관 손실, 대체재 기준을 실생활 관점으로 정리하는 농수산고고입니다.",
   metadataBase: new URL(env.SITE_URL),
-  verification: env.GOOGLE_SITE_VERIFICATION
-    ? {
-        google: env.GOOGLE_SITE_VERIFICATION,
-      }
-    : undefined,
+  verification: {
+    google: googleSiteVerification,
+  },
 };
 
 export default function RootLayout({
@@ -34,12 +41,15 @@ export default function RootLayout({
           title="농수산고고 RSS"
           href={`${env.SITE_URL}/rss.xml`}
         />
-        {env.NAVER_SITE_VERIFICATION ? (
-          <meta
-            name="naver-site-verification"
-            content={env.NAVER_SITE_VERIFICATION}
-          />
-        ) : null}
+        <meta
+          name="naver-site-verification"
+          content={naverSiteVerification}
+        />
+        <script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
+          crossOrigin="anonymous"
+        />
       </head>
       <body>
         <AnalyticsScripts />
