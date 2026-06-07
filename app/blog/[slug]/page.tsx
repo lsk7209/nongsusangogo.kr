@@ -30,6 +30,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
     return {};
   }
 
+  const articleHero = getArticleHeroImage(post);
+
   return {
     title: post.metaTitle,
     description: post.metaDescription,
@@ -42,10 +44,10 @@ export function generateMetadata({ params }: PageProps): Metadata {
       type: "article",
       images: [
         {
-          url: `${readEnv().SITE_URL}/images/nongsusan-article-hero.jpg`,
+          url: `${readEnv().SITE_URL}${articleHero.src}`,
           width: 1200,
           height: 675,
-          alt: "농수산고고 농수산품 대표 이미지",
+          alt: articleHero.alt,
         },
       ],
     },
@@ -61,6 +63,7 @@ export default function BlogPostPage({ params }: PageProps) {
 
   const siteUrl = readEnv().SITE_URL;
   const canonicalUrl = `${siteUrl}/blog/${post.slug}`;
+  const articleHero = getArticleHeroImage(post);
   const articleStyle = {
     "--article-accent": post.accentColors[0],
     "--article-warm": post.accentColors[1],
@@ -78,9 +81,13 @@ export default function BlogPostPage({ params }: PageProps) {
   }));
   const decisionRows = buildDecisionRows(post);
   const scenarioRows = buildScenarioRows(post);
+  const comparisonRows = buildArticleComparisonRows(post);
+  const reviewedAt = "2026-06-07";
   const tocItems = [
     { id: "decision-table", label: `${post.mainKeyword} 판단표` },
     { id: "scenario-table", label: "상황별 실행 기준" },
+    { id: "comparison-table", label: "비교표" },
+    { id: "source-interpretation", label: "출처 해석 기준" },
     ...bodyHeadings,
     ...deepDiveHeadings,
   ];
@@ -106,9 +113,9 @@ export default function BlogPostPage({ params }: PageProps) {
         description: post.excerpt,
         articleSection: post.category,
         keywords: [post.mainKeyword, ...post.expandedKeywords],
-        image: `${siteUrl}/images/nongsusan-article-hero.jpg`,
+        image: `${siteUrl}${articleHero.src}`,
         datePublished: post.publishAt,
-        dateModified: post.publishAt,
+        dateModified: reviewedAt,
         isAccessibleForFree: true,
         wordCount,
         citation: post.externalSource.href,
@@ -116,6 +123,7 @@ export default function BlogPostPage({ params }: PageProps) {
           "@type": "Organization",
           name: "농수산고고",
           url: siteUrl,
+          logo: `${siteUrl}/images/nongsusan-article-hero.jpg`,
         },
       },
       {
@@ -171,8 +179,8 @@ export default function BlogPostPage({ params }: PageProps) {
 
       <figure className="article-hero-image">
         <Image
-          src="/images/nongsusan-article-hero.jpg"
-          alt={`${post.category} 농수산품 장보기 이미지`}
+          src={articleHero.src}
+          alt={articleHero.alt}
           width={1200}
           height={675}
           priority
@@ -186,6 +194,7 @@ export default function BlogPostPage({ params }: PageProps) {
         <p className="article-source-note">
           참고 출처:{" "}
           <a href={post.externalSource.href}>{post.externalSource.label}</a>
+          <span> · 마지막 검토일: 2026년 6월 7일</span>
         </p>
       </section>
 
@@ -234,6 +243,40 @@ export default function BlogPostPage({ params }: PageProps) {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="panel article-comparison-card" id="comparison-table">
+        <h2>{post.mainKeyword} 비교표</h2>
+        <div className="responsive-table" role="region" aria-label="비교표">
+          <table>
+            <thead>
+              <tr>
+                <th>선택지</th>
+                <th>좋은 경우</th>
+                <th>주의할 점</th>
+              </tr>
+            </thead>
+            <tbody>
+              {comparisonRows.map((row) => (
+                <tr key={row.option}>
+                  <th scope="row">{row.option}</th>
+                  <td>{row.bestFor}</td>
+                  <td>{row.watch}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section className="panel article-source-card" id="source-interpretation">
+        <h2>공식 출처는 이렇게 해석합니다</h2>
+        <p>
+          {post.externalSource.label} 같은 공식 자료는 가격 흐름과 안전 기준을
+          확인하는 출발점입니다. 다만 실제 장보기에서는 포장 단위, 보관 공간,
+          조리 일정이 함께 달라지므로 이 글은 {post.mainKeyword}을
+          생활 기준으로 다시 풀어 설명합니다.
+        </p>
       </section>
 
       <nav className="panel article-toc" aria-label="글 목차">
@@ -382,6 +425,291 @@ function buildScenarioRows(
       note: "할인율보다 끝까지 먹을 수 있는 비율이 실제 장보기 단가를 결정합니다.",
     },
   ];
+}
+
+function buildArticleComparisonRows(
+  post: NonNullable<ReturnType<typeof getEditorialPost>>,
+) {
+  const customRows: Record<
+    string,
+    Array<{ option: string; bestFor: string; watch: string }>
+  > = {
+    "cucumber-summer-price-buying-window": [
+      {
+        option: "오이 낱개 구매",
+        bestFor: "2~3일 안에 냉국, 무침, 샐러드를 바로 만들 때",
+        watch: "묶음보다 단가가 높아 보여도 폐기 손실은 줄어듭니다.",
+      },
+      {
+        option: "오이 묶음 구매",
+        bestFor: "가족 식단에서 생채, 절임, 냉국을 연속으로 쓸 때",
+        watch: "장마철에는 표면 물기와 끝부분 마름을 먼저 확인해야 합니다.",
+      },
+      {
+        option: "샐러드 대체 채소",
+        bestFor: "오이 가격이 높고 아삭한 식감만 필요할 때",
+        watch: "수분감이 필요한 냉국 메뉴에는 대체 만족도가 낮을 수 있습니다.",
+      },
+    ],
+    "zucchini-rainy-season-price-risk": [
+      {
+        option: "애호박 통상품",
+        bestFor: "찌개나 볶음을 1~2일 안에 조리할 때",
+        watch: "굵기보다 단단함과 표면 흠집이 더 중요합니다.",
+      },
+      {
+        option: "두부·버섯 대체",
+        bestFor: "찌개 부피와 부드러운 식감을 유지하고 싶을 때",
+        watch: "애호박 특유의 단맛은 줄어들 수 있습니다.",
+      },
+      {
+        option: "가지·양파 볶음",
+        bestFor: "볶음 반찬에서 양과 식감을 채울 때",
+        watch: "기름 사용량이 늘면 체감 비용이 올라갈 수 있습니다.",
+      },
+    ],
+    "tomato-retail-wholesale-gap": [
+      {
+        option: "팩 소매가",
+        bestFor: "오늘 바로 먹을 샐러드나 도시락 과일을 고를 때",
+        watch: "팩 가격만 보지 말고 100g 기준으로 환산해야 합니다.",
+      },
+      {
+        option: "도매 흐름 확인",
+        bestFor: "며칠 뒤 행사 가능성을 가늠할 때",
+        watch: "소매가는 재고와 포장 단위 때문에 바로 따라오지 않습니다.",
+      },
+      {
+        option: "소스용 토마토",
+        bestFor: "외관보다 양과 익은 정도가 중요할 때",
+        watch: "완숙 상품은 보관 시간이 짧아 바로 조리해야 합니다.",
+      },
+    ],
+    "green-onion-price-spike-response": [
+      {
+        option: "생대파",
+        bestFor: "국물 첫 향, 고명, 양념장 향이 중요할 때",
+        watch: "사용량이 적은 집은 남는 부분이 빠르게 마를 수 있습니다.",
+      },
+      {
+        option: "냉동 대파",
+        bestFor: "국물, 볶음 초반, 라면처럼 익혀 쓰는 메뉴",
+        watch: "생고명처럼 식감을 살리는 용도에는 맞지 않습니다.",
+      },
+      {
+        option: "양파·부추 대체",
+        bestFor: "볶음밥, 부침개, 계란말이에서 양을 채울 때",
+        watch: "대파 향을 완전히 대체하지는 못합니다.",
+      },
+    ],
+    "onion-storage-loss-cost": [
+      {
+        option: "양파 박스 구매",
+        bestFor: "가족 식단에서 국, 볶음, 양념을 자주 만들 때",
+        watch: "습기와 싹이 생기면 실제 단가가 빠르게 올라갑니다.",
+      },
+      {
+        option: "소포장 양파",
+        bestFor: "1~2인 가구나 조리 빈도가 낮은 집",
+        watch: "단가는 높아도 버리는 양이 적으면 더 경제적일 수 있습니다.",
+      },
+      {
+        option: "손질 양파",
+        bestFor: "조리 시간이 부족하고 바로 쓸 메뉴가 정해졌을 때",
+        watch: "보관 기간이 짧아 미리 사두기에는 불리합니다.",
+      },
+    ],
+    "garlic-bulk-buy-checklist": [
+      {
+        option: "통마늘",
+        bestFor: "장기 보관과 직접 손질이 가능한 집",
+        watch: "손질 시간이 없으면 구매 후 부담이 커집니다.",
+      },
+      {
+        option: "깐마늘",
+        bestFor: "양념과 볶음에 바로 쓰는 빈도가 높을 때",
+        watch: "수분과 냄새 변화가 빠르므로 소분이 필요합니다.",
+      },
+      {
+        option: "냉동 다진 마늘",
+        bestFor: "소량씩 자주 쓰고 손질 시간을 줄이고 싶을 때",
+        watch: "생마늘 향이 필요한 메뉴에는 만족도가 낮을 수 있습니다.",
+      },
+    ],
+    "lettuce-restaurant-demand-price": [
+      {
+        option: "상추",
+        bestFor: "쌈 메뉴에서 부드러운 식감이 필요할 때",
+        watch: "외식 수요가 몰리면 체감 가격이 쉽게 흔들립니다.",
+      },
+      {
+        option: "깻잎",
+        bestFor: "적은 양으로 향을 강하게 내고 싶을 때",
+        watch: "보관 중 마름과 검은 반점을 확인해야 합니다.",
+      },
+      {
+        option: "양배추 쌈",
+        bestFor: "쌈채소 비용을 낮추고 보관성을 높이고 싶을 때",
+        watch: "생채소 쌈과 식감이 달라 메뉴에 맞춰야 합니다.",
+      },
+    ],
+    "salad-greens-price-map": [
+      {
+        option: "양상추 중심",
+        bestFor: "부피와 아삭함이 필요한 샐러드",
+        watch: "한 통 구매 후 남는 양이 커질 수 있습니다.",
+      },
+      {
+        option: "오이·토마토 혼합",
+        bestFor: "수분감과 색감을 함께 채우고 싶을 때",
+        watch: "각 품목의 보관 기간이 달라 먼저 먹을 순서를 정해야 합니다.",
+      },
+      {
+        option: "냉동·데친 채소 보완",
+        bestFor: "생채소 가격이 높은 주간",
+        watch: "샐러드보다는 곁들임이나 따뜻한 메뉴에 더 잘 맞습니다.",
+      },
+    ],
+    "soup-vegetable-cost": [
+      {
+        option: "무 중심 국거리",
+        bestFor: "시원한 국물 맛을 유지하고 싶을 때",
+        watch: "무 가격이 높으면 한 냄비 단가가 크게 흔들립니다.",
+      },
+      {
+        option: "대파·양파 소량 유지",
+        bestFor: "향과 단맛만 보완할 때",
+        watch: "향 재료를 모두 줄이면 국물 맛이 밋밋해질 수 있습니다.",
+      },
+      {
+        option: "버섯·콩나물 보완",
+        bestFor: "부피를 채우면서 비용을 낮출 때",
+        watch: "조리 시간이 짧아 과하게 끓이면 식감이 흐려집니다.",
+      },
+    ],
+    "stir-fry-vegetable-choice": [
+      {
+        option: "애호박",
+        bestFor: "부드러운 볶음과 빠른 조리가 필요할 때",
+        watch: "수분이 많아 과하게 볶으면 질척해질 수 있습니다.",
+      },
+      {
+        option: "가지",
+        bestFor: "식감과 양을 채우는 볶음 반찬",
+        watch: "기름 흡수가 많아 조리비까지 고려해야 합니다.",
+      },
+      {
+        option: "양파",
+        bestFor: "단맛과 향을 안정적으로 보완할 때",
+        watch: "주재료보다 보조 재료로 쓰는 편이 자연스럽습니다.",
+      },
+    ],
+    "radish-soup-seasonal-choice": [
+      {
+        option: "겨울 무",
+        bestFor: "시원한 국물과 단맛을 살리고 싶을 때",
+        watch: "크기보다 단단함과 표면 상태를 먼저 봐야 합니다.",
+      },
+      {
+        option: "소포장 무",
+        bestFor: "1~2인 가구에서 국거리만 조금 필요할 때",
+        watch: "절단면 수분과 갈변을 확인해야 합니다.",
+      },
+      {
+        option: "콩나물·버섯 보완",
+        bestFor: "무 가격이 높아 국물 부피를 채울 때",
+        watch: "무 특유의 단맛은 줄어듭니다.",
+      },
+    ],
+    "potato-sprout-loss": [
+      {
+        option: "소량 감자",
+        bestFor: "감자 메뉴가 1~2번만 예정된 집",
+        watch: "단가보다 싹 손실을 줄이는 효과가 큽니다.",
+      },
+      {
+        option: "묶음 감자",
+        bestFor: "카레, 조림, 찜을 연속으로 만들 때",
+        watch: "빛과 습기를 피하지 못하면 손실이 커집니다.",
+      },
+      {
+        option: "고구마·무 대체",
+        bestFor: "뿌리채소 식감을 유지하며 메뉴를 바꿀 때",
+        watch: "맛 방향이 달라 국물·볶음 용도를 구분해야 합니다.",
+      },
+    ],
+    "root-vegetable-budget": [
+      {
+        option: "감자",
+        bestFor: "포만감과 조림·카레 활용이 필요할 때",
+        watch: "싹과 녹변이 생기면 할인 이점이 사라집니다.",
+      },
+      {
+        option: "무",
+        bestFor: "국물, 생채, 김치 재료를 함께 고려할 때",
+        watch: "절단 후 보관 기간을 길게 잡기 어렵습니다.",
+      },
+      {
+        option: "당근",
+        bestFor: "색감과 도시락 반찬을 안정적으로 채울 때",
+        watch: "대량 구매보다 사용 빈도가 중요합니다.",
+      },
+    ],
+  };
+
+  return (
+    customRows[post.slug] ?? [
+      {
+        option: post.mainKeyword,
+        bestFor: "오늘 바로 쓸 메뉴가 있고 구매 목적이 분명할 때",
+        watch: "가격만 보지 말고 남을 가능성과 보관 시간을 같이 봐야 합니다.",
+      },
+      {
+        option: post.expandedKeywords[0] ?? post.category,
+        bestFor: "대체재나 보완 재료를 함께 검토할 때",
+        watch: "맛, 식감, 조리 시간이 달라질 수 있습니다.",
+      },
+      {
+        option: post.expandedKeywords[2] ?? "보관 기준",
+        bestFor: "며칠 뒤까지 품질을 유지해야 할 때",
+        watch: "구매 직후 처리하지 않으면 할인 효과가 줄어듭니다.",
+      },
+    ]
+  );
+}
+
+function getArticleHeroImage(
+  post: NonNullable<ReturnType<typeof getEditorialPost>>,
+) {
+  if (post.category.includes("수산")) {
+    return {
+      src: "/images/nongsusan-seafood-hero.jpg",
+      alt: `${post.category} 수산물 장보기 이미지`,
+    };
+  }
+
+  if (post.category.includes("과일") || post.category.includes("과채")) {
+    return {
+      src: "/images/nongsusan-fruit-hero.jpg",
+      alt: `${post.category} 과일 장보기 이미지`,
+    };
+  }
+
+  if (
+    post.category.includes("채소") ||
+    post.category.includes("양념") ||
+    post.category.includes("곡물")
+  ) {
+    return {
+      src: "/images/nongsusan-vegetable-hero.jpg",
+      alt: `${post.category} 채소 장보기 이미지`,
+    };
+  }
+
+  return {
+    src: "/images/nongsusan-article-hero.jpg",
+    alt: `${post.category} 농수산품 장보기 이미지`,
+  };
 }
 
 function getIntentGuidance(intent: string) {

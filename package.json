@@ -24,7 +24,8 @@
     "batch:build-keyword-pages": "tsx scripts/batch-build-keyword-pages.ts",
     "batch:enrich": "tsx scripts/batch-enrich.ts",
     "batch:quality-gate": "tsx scripts/batch-quality-gate.ts",
-    "batch:quality-audit": "tsx scripts/batch-quality-audit.ts"
+    "batch:quality-audit": "tsx scripts/batch-quality-audit.ts",
+    "editorial:audit": "tsx scripts/audit-editorial-content.ts"
   },
   "keywords": [],
   "author": "",

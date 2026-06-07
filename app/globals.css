@@ -383,6 +383,15 @@ p {
   border-left: 4px solid var(--article-accent, var(--accent));
 }
 
+.article-comparison-card {
+  border-left: 4px solid var(--article-accent, var(--accent));
+}
+
+.article-source-card {
+  border-left: 4px solid var(--article-warm, var(--warn));
+  background: color-mix(in srgb, var(--article-warm, var(--warn)) 7%, #fffdf8);
+}
+
 .article-data-card p {
   margin: 0 0 16px;
 }
