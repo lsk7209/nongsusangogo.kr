@@ -3039,6 +3039,7 @@ function cleanGeneratedKoreanText(text: string) {
     .replaceAll("후숙를", "후숙을")
     .replaceAll("구성을", "구성을")
     .replaceAll("밥값와", "밥값과")
+    .replaceAll("가격를", "가격을")
     .replaceAll("비용를", "비용을")
     .replaceAll("소비용를", "소비용을")
     .replaceAll("플레인를", "플레인을")
@@ -3055,6 +3056,8 @@ function cleanGeneratedKoreanText(text: string) {
     .replaceAll("손질를", "손질을")
     .replaceAll("반찬가", "반찬이")
     .replaceAll("양념가", "양념이")
+    .replaceAll("손실와", "손실과")
+    .replaceAll("활용를", "활용을")
     .replaceAll("선택와", "선택과")
     .replaceAll("이동를", "이동을")
     .replaceAll("요약를", "요약을")
@@ -3066,10 +3069,22 @@ drafts.push(...buildBulkDrafts());
 
 export const editorialPosts: EditorialPost[] = drafts.map((draft, index) => {
   const publishAt = getEditorialPublishAt(index);
+  const priorityExperience = buildPriorityExperienceParagraph(draft, index);
+  const priorityDeepDive = buildPriorityDeepDive(draft, index);
   const publishReadyDraft = {
     ...draft,
-    body: [...draft.body, buildCleanPracticalClosing(draft, index)],
-    deepDives: buildCleanDeepDives(draft, index),
+    body: [
+      ...draft.body,
+      ...(priorityExperience ? [priorityExperience] : []),
+      buildCleanPracticalClosing(draft, index),
+    ].map(cleanGeneratedKoreanText),
+    deepDives: [
+      ...buildCleanDeepDives(draft, index),
+      ...(priorityDeepDive ? [priorityDeepDive] : []),
+    ].map((section) => ({
+      heading: cleanGeneratedKoreanText(section.heading),
+      body: cleanGeneratedKoreanText(section.body),
+    })),
   };
 
   return {
@@ -3084,6 +3099,52 @@ export const editorialPosts: EditorialPost[] = drafts.map((draft, index) => {
     codexOnly: true,
   };
 });
+
+function buildPriorityExperienceParagraph(post: PostDraft, index: number) {
+  if (index > 20) {
+    return null;
+  }
+
+  const [firstKeyword, secondKeyword, thirdKeyword] = post.expandedKeywords;
+  const mainTopic = withJosa(post.mainKeyword, "은", "는");
+  const mainObject = withJosa(post.mainKeyword, "을", "를");
+  const firstSubject = withJosa(firstKeyword, "이", "가");
+  const secondObject = withJosa(secondKeyword, "을", "를");
+  const thirdObject = withJosa(thirdKeyword, "을", "를");
+
+  const paragraphs = [
+    `${mainTopic} 실제로는 장보기 전 30초 점검에서 승부가 납니다. 냉장고에 이미 비슷한 재료가 있는지, 오늘 저녁 메뉴에 바로 들어가는지, 남았을 때 다음 메뉴로 돌릴 수 있는지를 먼저 확인하세요. ${firstSubject} 좋아 보여도 이 세 가지가 비어 있으면 할인보다 폐기 손실이 커질 수 있습니다. 특히 ${thirdObject} 관리할 시간이 없는 날에는 소량 구매가 상위 선택입니다.`,
+    `${mainObject} 가구별로 보면 답이 더 분명해집니다. 1~2인 가구는 포장 단위와 소비 속도를 우선하고, 가족 단위는 반복 메뉴와 손질 시간을 함께 계산해야 합니다. ${secondObject} 낮추고 싶다면 같은 역할을 하는 재료를 하나만 정해두세요. 대체재가 두세 개로 늘어나면 오히려 장바구니가 복잡해지고 남는 재료가 생깁니다.`,
+    `${mainTopic} 매장에서 바로 판단하려면 색, 수분, 포장 안 결로, 끝부분 마름, 냄새처럼 눈으로 확인되는 신호를 먼저 봐야 합니다. 가격표가 좋아도 상태가 애매하면 집에 도착한 뒤 손질 시간이 길어지고, 그 시간이 곧 숨은 비용이 됩니다. ${thirdKeyword}까지 고려하면 싼 품목보다 바로 쓸 수 있는 품목이 더 경제적일 때가 많습니다.`,
+    `${mainObject} 검색한 독자는 보통 '오늘 사도 되는지'를 묻고 있습니다. 답은 가격 하나가 아니라 사용 시점, 보관 여유, 대체 가능성의 조합입니다. ${firstKeyword} 조건이 좋고 ${secondKeyword} 부담이 낮아도 이번 주 메뉴가 정해지지 않았다면 기다리는 편이 낫습니다. 반대로 오늘 바로 쓸 메뉴가 있으면 조금 높은 가격도 실패 확률이 낮습니다.`,
+    `${mainTopic} 상위노출을 노리는 글이라면 독자가 따라 할 수 있는 작은 행동이 있어야 합니다. 예를 들어 장보기 메모에 '오늘 쓸 양', '남으면 돌릴 메뉴', '${thirdKeyword} 처리 시간' 세 칸을 만들면 판단이 빨라집니다. 이 방식은 검색자가 글을 읽고 바로 행동하게 만들고, 단순 시세 설명보다 체류 가치도 높입니다.`,
+  ];
+
+  return paragraphs[index % paragraphs.length]!;
+}
+
+function buildPriorityDeepDive(post: PostDraft, index: number) {
+  if (index > 20) {
+    return null;
+  }
+
+  const [firstKeyword, secondKeyword, thirdKeyword] = post.expandedKeywords;
+  const mainTopic = withJosa(post.mainKeyword, "은", "는");
+  const secondObject = withJosa(secondKeyword, "을", "를");
+  const firstWithAnd = withJosa(firstKeyword, "과", "와");
+  const thirdSubject = withJosa(thirdKeyword, "은", "는");
+
+  const bodies = [
+    `${mainTopic} 독자에게 도움이 되려면 가격 흐름을 생활 결정으로 번역해야 합니다. 오늘 바로 쓸 수 있는 품목인지, 이틀 뒤에도 품질이 유지되는지, 남았을 때 다른 메뉴로 이동할 수 있는지를 문단 안에서 분리하면 검색자는 자신의 상황을 빠르게 대입할 수 있습니다. ${secondObject} 조정하는 방법도 '덜 사기' 하나가 아니라 대체재, 포장 단위, 보관 시간까지 함께 제시해야 설득력이 생깁니다.`,
+    `${thirdSubject} 글의 신뢰도를 가르는 마지막 기준입니다. 많은 장보기 글이 가격이나 대체재에서 끝나지만, 실제 손실은 집에 도착한 뒤 생깁니다. 그래서 공개 초기 글에는 보관 위치, 손질 순서, 소분 여부처럼 행동으로 옮길 수 있는 문장이 필요합니다. 이 정보가 있어야 ${firstWithAnd} ${secondKeyword}가 단순 키워드가 아니라 실질적인 판단 기준으로 작동합니다.`,
+    `${mainTopic} 품질을 높이려면 예외 조건을 반드시 넣어야 합니다. 바로 먹을 메뉴가 있으면 구매가 맞고, 일정이 흐리면 기다리는 편이 맞으며, 냉장고 공간이 부족하면 소포장이 맞습니다. 이렇게 조건을 나누면 검색자는 글의 결론을 맹목적으로 따르지 않고 자기 상황에 적용할 수 있습니다. 이것이 장기적으로 더 좋은 SEO 신호를 만듭니다.`,
+  ];
+
+  return {
+    heading: "실전 적용 예시와 예외 조건",
+    body: bodies[index % bodies.length]!,
+  };
+}
 
 function getEditorialPublishAt(index: number) {
   if (index < 10) {
@@ -3169,7 +3230,7 @@ function buildCleanDeepDives(post: PostDraft, index: number) {
       },
       {
         heading: "가격보다 먼저 볼 생활 변수",
-        body: `${post.mainKeyword} 판단에서 가격은 출발점일 뿐입니다. 실제 결과는 가족 수, 보관 공간, 조리 시간, 남은 재료 처리 능력에 따라 달라집니다. ${secondObject} 낮추고 싶다면 먼저 냉장고 재고를 확인하고, 같은 역할을 하는 대체 품목을 하나 정해두세요. 그러면 가격이 예상보다 높아도 메뉴 전체를 포기하지 않고 비용을 조정할 수 있습니다.`,
+        body: `${post.mainKeyword} 판단에서 가격은 출발점일 뿐입니다. 실제 결과는 가족 수, 보관 공간, 조리 시간, 남은 재료 처리 능력에 따라 달라집니다. ${secondKeyword} 부담을 줄이고 싶다면 먼저 냉장고 재고를 확인하고, 같은 역할을 하는 대체 품목을 하나 정해두세요. 그러면 가격이 예상보다 높아도 메뉴 전체를 포기하지 않고 비용을 조정할 수 있습니다.`,
       },
       {
         heading: "다음 장보기로 이어지는 기록법",
@@ -3183,7 +3244,7 @@ function buildCleanDeepDives(post: PostDraft, index: number) {
       },
       {
         heading: "대체재를 고를 때의 기준",
-        body: `대체재는 맛이 완전히 같은 품목을 찾는 일이 아닙니다. ${post.mainKeyword} 관련 품목이 메뉴에서 맡는 역할을 먼저 나눠야 합니다. 포만감, 향, 식감, 단백질, 색감 중 무엇이 중요한지 정하면 ${secondKeyword}를 낮추면서도 만족도를 지킬 수 있습니다. 이 방식은 가격이 오른 주간에도 식단을 무리하게 바꾸지 않게 해줍니다.`,
+        body: `대체재는 맛이 완전히 같은 품목을 찾는 일이 아닙니다. ${post.mainKeyword} 관련 품목이 메뉴에서 맡는 역할을 먼저 나눠야 합니다. 포만감, 향, 식감, 단백질, 색감 중 무엇이 중요한지 정하면 ${secondKeyword} 부담을 줄이면서도 만족도를 지킬 수 있습니다. 이 방식은 가격이 오른 주간에도 식단을 무리하게 바꾸지 않게 해줍니다.`,
       },
       {
         heading: "신뢰도를 높이는 출처 활용",
@@ -3201,7 +3262,7 @@ function buildCleanDeepDives(post: PostDraft, index: number) {
       },
       {
         heading: "SEO 글에서 필요한 행동 유도",
-        body: `정보 글도 마지막에는 행동을 제안해야 합니다. ${post.mainKeyword}를 읽은 독자에게 관련 장보기 기준, 보관 글, 대체재 글로 이어지는 내부 링크를 제공하면 체류 흐름이 좋아집니다. 또한 ${secondKeyword}를 낮추는 체크리스트를 제시하면 독자는 페이지를 단순히 훑고 나가지 않고 실제 결정에 활용하게 됩니다.`,
+        body: `정보 글도 마지막에는 행동을 제안해야 합니다. ${post.mainKeyword}를 읽은 독자에게 관련 장보기 기준, 보관 글, 대체재 글로 이어지는 내부 링크를 제공하면 체류 흐름이 좋아집니다. 또한 ${secondKeyword} 부담을 줄이는 체크리스트를 제시하면 독자는 페이지를 단순히 훑고 나가지 않고 실제 결정에 활용하게 됩니다.`,
       },
     ],
   ];
@@ -3223,7 +3284,7 @@ function buildCleanEvidenceSentence(post: PostDraft, sectionIndex: number) {
   }
 
   if (sectionIndex === 1) {
-    return `${secondObject} 줄이려면 구매처 비교만으로는 부족합니다. 포장 단위, 손질 시간, 냉장고 여유, 대체 품목까지 함께 검토해야 실제 장바구니 비용이 낮아지고 독자에게도 실행 가능한 조언이 됩니다.`;
+    return `${secondKeyword} 부담을 줄이려면 구매처 비교만으로는 부족합니다. 포장 단위, 손질 시간, 냉장고 여유, 대체 품목까지 함께 검토해야 실제 장바구니 비용이 낮아지고 독자에게도 실행 가능한 조언이 됩니다.`;
   }
 
   return `${thirdSubject} 구매 후 만족도를 결정하는 마지막 기준입니다. 이 부분을 체크리스트와 내부 링크로 연결하면 독자가 다음 행동을 쉽게 선택할 수 있고, ${post.mainKeyword} 글의 전문성과 체류 가치도 함께 높아집니다.`;
