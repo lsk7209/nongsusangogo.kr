@@ -313,6 +313,17 @@ p {
   border-left: 4px solid var(--article-accent, var(--accent));
 }
 
+.article-source-note {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.article-source-note a {
+  color: var(--article-accent, var(--accent));
+  font-weight: 800;
+}
+
 .article-hero-image {
   margin: 22px 0 26px;
   overflow: hidden;

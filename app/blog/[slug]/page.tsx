@@ -42,7 +42,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
       type: "article",
       images: [
         {
-          url: `${readEnv().SITE_URL}/images/nongsusan-article-hero.png`,
+          url: `${readEnv().SITE_URL}/images/nongsusan-article-hero.jpg`,
           width: 1200,
           height: 675,
           alt: "농수산고고 농수산품 대표 이미지",
@@ -106,6 +106,7 @@ export default function BlogPostPage({ params }: PageProps) {
         description: post.excerpt,
         articleSection: post.category,
         keywords: [post.mainKeyword, ...post.expandedKeywords],
+        image: `${siteUrl}/images/nongsusan-article-hero.jpg`,
         datePublished: post.publishAt,
         dateModified: post.publishAt,
         isAccessibleForFree: true,
@@ -170,7 +171,7 @@ export default function BlogPostPage({ params }: PageProps) {
 
       <figure className="article-hero-image">
         <Image
-          src="/images/nongsusan-article-hero.png"
+          src="/images/nongsusan-article-hero.jpg"
           alt={`${post.category} 농수산품 장보기 이미지`}
           width={1200}
           height={675}
@@ -182,6 +183,10 @@ export default function BlogPostPage({ params }: PageProps) {
       <section className="panel article-answer">
         <h2>빠른 답변</h2>
         <p>{post.quickAnswer}</p>
+        <p className="article-source-note">
+          참고 출처:{" "}
+          <a href={post.externalSource.href}>{post.externalSource.label}</a>
+        </p>
       </section>
 
       <section className="article-elements" aria-label="글 구성 요소">
