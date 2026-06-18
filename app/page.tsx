@@ -1,4 +1,5 @@
 import { Disclosure } from "@/components/disclosure";
+import { PriceSourceGuide } from "@/components/price-source-guide";
 import { PriceChart } from "@/components/price-chart";
 import { readEnv } from "@/lib/config/env";
 import { loadKeywordPagesSafe } from "@/lib/content/db-keyword-pages";
@@ -105,6 +106,8 @@ export default async function Home() {
           <strong>생활비 절감</strong>
         </div>
       </section>
+
+      <PriceSourceGuide />
 
       <section className="section-stack">
         <div>

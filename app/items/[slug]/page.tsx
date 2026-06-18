@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { AdSlot } from "@/components/ad-slot";
 import { Disclosure } from "@/components/disclosure";
 import { PriceChart } from "@/components/price-chart";
+import { PriceSourceGuide } from "@/components/price-source-guide";
 import { PriceTool } from "@/components/price-tool";
 import { WholesaleRetailGauge } from "@/components/wholesale-retail-gauge";
 import { readEnv } from "@/lib/config/env";
@@ -128,6 +129,7 @@ export default async function ItemPage({ params }: PageProps) {
           <h2>도소매 참고 게이지</h2>
           <WholesaleRetailGauge value={page.price === null ? 0 : 58} />
         </section>
+        <PriceSourceGuide itemName={page.itemName} />
         <AdSlot label="시세 페이지 광고 슬롯" />
         {page.price === null ? (
           <section className="notice">
