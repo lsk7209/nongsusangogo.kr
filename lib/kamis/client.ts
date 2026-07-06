@@ -11,6 +11,8 @@ import {
 } from "@/lib/kamis/raw";
 
 type FetchLike = typeof fetch;
+const DEFAULT_KAMIS_BASE_URL =
+  "http://www.kamis.or.kr/service/price/xml.do?action=dailyPriceByCategoryList";
 
 export class MockKamisClient implements KamisClient {
   async fetchDailyPrices(
@@ -43,8 +45,12 @@ export class HttpKamisClient implements KamisClient {
   ): Promise<KamisPriceResponse> {
     const fetcher = this.options.fetcher ?? fetch;
     const url = new URL(this.options.baseUrl);
-    url.searchParams.set("cert_id", this.options.certId);
-    url.searchParams.set("cert_key", this.options.certKey);
+    url.searchParams.set("p_cert_id", this.options.certId);
+    url.searchParams.set("p_cert_key", this.options.certKey);
+    url.searchParams.set(
+      "p_returntype",
+      this.options.responseFormat === "xml" ? "xml" : "json",
+    );
 
     if (request.cursor) {
       url.searchParams.set("cursor", request.cursor);
@@ -69,12 +75,12 @@ export function createKamisClient(
 ): KamisClient {
   const env = readEnv(source);
 
-  if (!env.KAMIS_BASE_URL || !env.KAMIS_CERT_ID || !env.KAMIS_CERT_KEY) {
+  if (!env.KAMIS_CERT_ID || !env.KAMIS_CERT_KEY) {
     return new MockKamisClient();
   }
 
   return new HttpKamisClient({
-    baseUrl: env.KAMIS_BASE_URL,
+    baseUrl: env.KAMIS_BASE_URL ?? DEFAULT_KAMIS_BASE_URL,
     certId: env.KAMIS_CERT_ID,
     certKey: env.KAMIS_CERT_KEY,
     responseFormat: env.KAMIS_RESPONSE_FORMAT,

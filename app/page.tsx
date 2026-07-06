@@ -23,7 +23,7 @@ export function generateMetadata() {
 export default async function Home() {
   const env = readEnv();
   const hasKamisApi = Boolean(
-    env.KAMIS_BASE_URL && env.KAMIS_CERT_ID && env.KAMIS_CERT_KEY,
+    env.KAMIS_CERT_ID && env.KAMIS_CERT_KEY,
   );
   const db = getOptionalDatabase(createDatabase);
   const pages = await loadPublicPagesSafe(db);

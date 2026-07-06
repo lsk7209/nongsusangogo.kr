@@ -18,7 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const env = readEnv();
   const hasKamisApi = Boolean(
-    env.KAMIS_BASE_URL && env.KAMIS_CERT_ID && env.KAMIS_CERT_KEY,
+    env.KAMIS_CERT_ID && env.KAMIS_CERT_KEY,
   );
   const pages = hasKamisApi ? await loadPublicPagesSafe(db) : [];
   const keywordPages = await loadKeywordPagesSafe(db);

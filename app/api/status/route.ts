@@ -18,9 +18,7 @@ export async function GET() {
   const dbConfigured = Boolean(process.env.TURSO_DATABASE_URL);
   const cronAuthConfigured = Boolean(process.env.CRON_SECRET);
   const kamisApiConfigured = Boolean(
-    process.env.KAMIS_BASE_URL &&
-      process.env.KAMIS_CERT_ID &&
-      process.env.KAMIS_CERT_KEY,
+    process.env.KAMIS_CERT_ID && process.env.KAMIS_CERT_KEY,
   );
   const db = dbConfigured ? createDatabase() : null;
   const readinessResult = await getReadiness(db);

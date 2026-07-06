@@ -21,12 +21,11 @@ jobs:
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
-          KAMIS_BASE_URL: ${{ secrets.KAMIS_BASE_URL }}
           KAMIS_CERT_ID: ${{ secrets.KAMIS_CERT_ID }}
           KAMIS_CERT_KEY: ${{ secrets.KAMIS_CERT_KEY }}
         run: |
           missing=()
-          for name in TURSO_DATABASE_URL TURSO_AUTH_TOKEN KAMIS_BASE_URL KAMIS_CERT_ID KAMIS_CERT_KEY; do
+          for name in TURSO_DATABASE_URL TURSO_AUTH_TOKEN KAMIS_CERT_ID KAMIS_CERT_KEY; do
             if [ -z "${!name}" ]; then
               missing+=("$name")
             fi
@@ -44,6 +43,6 @@ jobs:
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
-          KAMIS_BASE_URL: ${{ secrets.KAMIS_BASE_URL }}
+          KAMIS_BASE_URL: ${{ vars.KAMIS_BASE_URL || 'http://www.kamis.or.kr/service/price/xml.do?action=dailyPriceByCategoryList' }}
           KAMIS_CERT_ID: ${{ secrets.KAMIS_CERT_ID }}
           KAMIS_CERT_KEY: ${{ secrets.KAMIS_CERT_KEY }}
