@@ -15,7 +15,32 @@ jobs:
           node-version: "24"
           cache: npm
       - run: npm ci
+      - name: Check collection secrets
+        id: preflight
+        shell: bash
+        env:
+          TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
+          TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
+          KAMIS_BASE_URL: ${{ secrets.KAMIS_BASE_URL }}
+          KAMIS_CERT_ID: ${{ secrets.KAMIS_CERT_ID }}
+          KAMIS_CERT_KEY: ${{ secrets.KAMIS_CERT_KEY }}
+        run: |
+          missing=()
+          for name in TURSO_DATABASE_URL TURSO_AUTH_TOKEN KAMIS_BASE_URL KAMIS_CERT_ID KAMIS_CERT_KEY; do
+            if [ -z "${!name}" ]; then
+              missing+=("$name")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping bulk collection; missing required secrets: ${missing[*]}"
+            exit 0
+          fi
+
+          echo "ready=true" >> "$GITHUB_OUTPUT"
       - run: npm run batch:collect
+        if: steps.preflight.outputs.ready == 'true'
         env:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
