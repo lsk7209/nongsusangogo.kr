@@ -58,7 +58,15 @@ export function KeywordPageView({ page }: { page: KeywordPage }) {
       <p className="eyebrow">{page.intent}</p>
       <h1>{page.title}</h1>
       <p>{page.searchSummary}</p>
-      <section className="panel">
+      <nav className="panel article-toc table-of-contents" aria-label="페이지 목차">
+        <ol>
+          <li><a href="#market-check">공식 시세 확인</a></li>
+          <li><a href="#buying-decision">장보기 판단 기준</a></li>
+          <li><a href="#household-risk">가구별 손실 점검</a></li>
+          <li><a href="#official-sources">공식 자료 대조</a></li>
+        </ol>
+      </nav>
+      <section className="panel" id="market-check">
         <h2>{page.primaryKeyword} 먼저 확인할 기준</h2>
         <p>
           이 페이지는 {intentLabels[page.intent]} 검색 의도에 맞춰 하루 가격만
@@ -70,6 +78,37 @@ export function KeywordPageView({ page }: { page: KeywordPage }) {
           따라서 이 글은 구매 지시가 아니라 확인 순서를 제공하며, 실제 결제
           전에는 거주 지역의 마트·시장 가격과 보관 가능 기간을 함께 확인해야
           합니다.
+        </p>
+      </section>
+      <section className="panel" id="buying-decision">
+        <h2>{page.primaryKeyword} 장보기 판단 기준</h2>
+        <p>
+          {page.primaryKeyword} 가격을 볼 때는 오늘 가격 하나보다 비교 기준을 먼저 정해야 합니다.
+          KAMIS 같은 공식 시세는 조사 지역, 등급, 거래 단위, 도매와 소매 구분에 따라 숫자가 달라질 수
+          있으므로, 실제 구매 전에는 현재가, 전월 평균, 평년 범위, 최근 등락 방향을 나눠 확인하는 편이
+          안전합니다. nongsusangogo.kr 농수산고고는 이 과정을 생활 장보기 기준으로 풀어, 가격표를 본 뒤
+          바로 살지, 며칠 기다릴지, 대체 품목으로 바꿀지 판단할 수 있게 정리합니다.
+        </p>
+        <p>
+          특히 {page.primaryKeyword} 관련 검색은 품목 가격만 확인하고 끝나는 경우가 많지만, 실제
+          지출은 보관 손실과 조리 계획에서 크게 달라집니다. 싸게 산 품목이라도 가족 구성원이 먹는
+          속도보다 많이 사면 냉장고 안에서 손실이 생기고, 손질 후 버리는 부분이 많으면 체감 단가는
+          올라갑니다. 따라서 공식 시세가 낮아 보일 때도 소포장, 대용량, 대체재, 냉동 가능 여부를 함께
+          비교해야 합니다.
+        </p>
+      </section>
+      <section className="panel" id="household-risk">
+        <h2>{page.primaryKeyword} 가구별 손실 점검</h2>
+        <ul>
+          <li>1인가구는 최저가보다 소포장과 소비 속도를 먼저 봅니다.</li>
+          <li>2인가구는 한 주 식단에서 같은 재료를 두 번 이상 쓸 수 있는지 확인합니다.</li>
+          <li>4인가족은 대량 구매가 유리할 수 있지만 냉장 공간과 손질 시간을 같이 계산합니다.</li>
+          <li>명절, 김장, 캠핑처럼 수요가 몰리는 시기는 전주 가격과 당일 가격을 분리해 봅니다.</li>
+        </ul>
+        <p>
+          이 기준은 검색 상위에 노출되는 단순 가격 요약보다 실제 사용성이 높은 정보입니다. 독자는
+          공식 데이터의 숫자를 확인한 뒤 자신의 가구 규모와 메뉴 계획에 맞춰 구매량을 줄이거나 늘릴 수
+          있고, 같은 예산 안에서 낭비를 줄이는 선택을 할 수 있습니다.
         </p>
       </section>
       <section className="panel">
@@ -95,7 +134,7 @@ export function KeywordPageView({ page }: { page: KeywordPage }) {
         </ol>
       </section>
       <PriceSourceGuide itemName={page.primaryKeyword} />
-      <section className="panel">
+      <section className="panel" id="official-sources">
         <h2>{page.primaryKeyword} 공식 자료 대조</h2>
         <p>
           검색 결과나 커뮤니티 체감 가격은 빠르게 변하지만 기준이 섞이기 쉽습니다.

@@ -8,6 +8,7 @@ import {
 } from "@/lib/content/db-keyword-pages";
 import { getOptionalDatabase } from "@/lib/content/db-pages";
 import { createDatabase } from "@/lib/db/client";
+import { buildKeywordSeo } from "@/lib/seo/adsense-metadata";
 
 type PageProps = { params: { event: string } };
 
@@ -31,8 +32,7 @@ export async function generateMetadata({
   );
   if (!page) return {};
   return {
-    title: page.title,
-    description: page.searchSummary,
+    ...buildKeywordSeo(page),
     alternates: { canonical: `${readEnv().SITE_URL}${page.path}` },
   };
 }

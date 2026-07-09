@@ -8,12 +8,11 @@ import { getPublishedEditorialPosts } from "@/lib/content/editorial-posts";
 import { hubs } from "@/lib/content/site-pages";
 import { createDatabase } from "@/lib/db/client";
 import { buildReadinessReport } from "@/lib/gates/readiness";
+import { buildHomeSeo } from "@/lib/seo/adsense-metadata";
 
 export function generateMetadata() {
   return {
-    title: "농수산물 시세와 장보기 가격 기준",
-    description:
-      "농수산물 시세, 농산물 가격, 장보기 타이밍, 보관 손실, 대체재 기준을 실생활 관점으로 정리합니다.",
+    ...buildHomeSeo(),
     alternates: {
       canonical: readEnv().SITE_URL,
     },
