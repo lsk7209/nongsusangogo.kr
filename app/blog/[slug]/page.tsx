@@ -9,6 +9,7 @@ import {
   getEditorialPost,
   getPublishedEditorialPosts,
 } from "@/lib/content/editorial-posts";
+import { buildArticleSeo } from "@/lib/seo/adsense-metadata";
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
@@ -31,16 +32,19 @@ export function generateMetadata({ params }: PageProps): Metadata {
   }
 
   const articleHero = getArticleHeroImage(post);
-
-  return {
+  const seo = buildArticleSeo({
     title: post.metaTitle,
     description: post.metaDescription,
+  });
+
+  return {
+    ...seo,
     alternates: {
       canonical: `${readEnv().SITE_URL}/blog/${post.slug}`,
     },
     openGraph: {
-      title: post.title,
-      description: post.excerpt,
+      title: seo.title,
+      description: seo.description,
       type: "article",
       images: [
         {

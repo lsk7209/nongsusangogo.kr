@@ -22,3 +22,12 @@ export function buildHomeSeo() {
       "nongsusangogo.kr 농수산고고는 농산물, 수산물, 축산물 가격 흐름을 공식 시세와 생활 장보기 기준으로 비교합니다.",
   };
 }
+
+export function buildArticleSeo(page: { title: string; description: string }) {
+  return {
+    title: `${SITE_IDENTITY} | ${page.title}`,
+    description: trimDescription(
+      `nongsusangogo.kr 농수산고고는 ${page.description} 공식 출처, 보관 손실, 장보기 판단 기준을 함께 확인합니다.`,
+    ),
+  };
+}
