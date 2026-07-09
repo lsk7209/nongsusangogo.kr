@@ -137,6 +137,12 @@ export function KeywordPageView({ page }: { page: KeywordPage }) {
           올라갈 수 있고, 반대로 단가가 조금 높아도 바로 먹을 수 있는 소량 상품이 더 합리적일 수
           있습니다.
         </p>
+        <p>
+          기록을 남길 때는 날짜, 구매처, 단위, 실제 결제 금액, 남은 양을 함께 적어두면 다음 장보기
+          판단이 쉬워집니다. 같은 {page.primaryKeyword}라도 온라인 배송, 동네 마트, 전통시장,
+          대형마트 행사가 서로 다른 비용 구조를 가지므로 한 번의 가격표만으로 결론을 내리기보다
+          두세 곳의 조건을 비교하는 것이 안전합니다.
+        </p>
       </section>
       <section className="panel">
         <h2>핵심 키워드</h2>
