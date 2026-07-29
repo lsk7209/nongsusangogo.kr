@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { readEnv } from "@/lib/config/env";
 
 type AdSlotProps = {
@@ -22,6 +23,12 @@ export function AdSlot({ label }: AdSlotProps) {
 
   return (
     <aside className="ad-slot" aria-label={label}>
+      <Script
+        id="adsense-loader"
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${client}`}
+        strategy="afterInteractive"
+        crossOrigin="anonymous"
+      />
       <ins
         className="adsbygoogle"
         data-ad-client={client}

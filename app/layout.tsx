@@ -9,11 +9,6 @@ const googleSiteVerification =
   "NMjcqkG5xC8wts9aniDfqyrzvET4JIFFknFZvQIbIpM";
 const naverSiteVerification =
   env.NAVER_SITE_VERIFICATION ?? "06c0f17cbec9a0356acac84e2d1b57e8656f8bd6";
-const adsenseClientId =
-  env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID ??
-  env.GOOGLE_ADSENSE_CLIENT_ID ??
-  "ca-pub-3050601904412736";
-
 export const metadata: Metadata = {
   title: {
     default: "농수산고고",
@@ -44,11 +39,6 @@ export default function RootLayout({
         <meta
           name="naver-site-verification"
           content={naverSiteVerification}
-        />
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-          crossOrigin="anonymous"
         />
       </head>
       <body>
