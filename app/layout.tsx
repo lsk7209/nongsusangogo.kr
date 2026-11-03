@@ -1,3 +1,4 @@
+import AffiliateFleetScript from 'next/script';
 import type { Metadata } from "next";
 import { AnalyticsScripts } from "@/components/analytics-scripts";
 import { readEnv } from "@/lib/config/env";
@@ -95,6 +96,7 @@ export default function RootLayout({
           <a href="/blog">블로그</a>
           <a href="/contact">문의</a>
         </nav>
+      <AffiliateFleetScript id="affiliate-os-fleet" src="https://multi-dashboard-one.vercel.app/fleet-widget.js" strategy="afterInteractive" />
       </body>
     </html>
   );
